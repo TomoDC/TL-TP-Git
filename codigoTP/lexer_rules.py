@@ -1,4 +1,4 @@
-tokens = ['PUNTOCOMA', 'HASHTAG', 'LLAVEABIERTA', 'LLAVECERRADA', 'IF', 'ELSE', 'LPAREN', 'RPAREN', 'FOR', 'WHILE', 'DO', 'MULTIPLICACIONESCALAR', 'CAPITALIZAR', 'COLINEALES', 'PRINT', 'LENGTH', 'IGUAL', 'SUMA', 'MENOS', 'POR', 'DIV', 'POTENCIA', 'PORCENTAJE', 'DESIGUALDAD', 'MAYOR', 'MENOR', 'AND', 'OR', 'NOT', 'TRUE', 'FALSE', 'INTERROGACION', 'DOSPUNTOS', 'VARIABLE', 'INT', 'FLOAT', 'CORCHETEA', 'CORCHETEC', 'COMA', 'COMILLA', 'REGISTRO', 'CAMPO', 'BEGIN', 'END', 'RETURN', 'CADENA']
+tokens = ['PUNTOCOMA', 'HASHTAG', 'LLAVEABIERTA', 'LLAVECERRADA', 'IF', 'ELSE', 'LPAREN', 'RPAREN', 'FOR', 'WHILE', 'DO', 'MULTIPLICACIONESCALAR', 'CAPITALIZAR', 'COLINEALES', 'PRINT', 'LENGTH', 'IGUAL', 'SUMA', 'MENOS', 'POR', 'DIV', 'POTENCIA', 'PORCENTAJE', 'DESIGUALDAD', 'MAYOR', 'MENOR', 'AND', 'OR', 'NOT', 'TRUE', 'FALSE', 'INTERROGACION', 'DOSPUNTOS', 'VARIABLE', 'INT', 'FLOAT', 'CORCHETEA', 'CORCHETEC', 'COMA', 'COMILLA', 'REGISTRO', 'BEGIN', 'END', 'RETURN']
 
 t_PUNTOCOMA = r"\;"
 t_LLAVEABIERTA = r"\{"
@@ -37,26 +37,48 @@ t_COMILLA = r"\""
 t_BEGIN = r"begin"
 t_END = r"end"
 t_RETURN = r"return"
-t_TRUE = r"true" #Tal vez hay q ponerle el tipo
-t_FALSE = r"false" #Tal vez hay q ponerle el tipo
+t_TRUE = r"true"
+#Tal vez hay q ponerle el tipo
+t_FALSE = r"false"
+#Tal vez hay q ponerle el tipo
+
 
 def t_INT(token):
-	r"[0-9][0-9]*]" #Aceptaríamos ints como 0009 y si no pongo el 0, no aceptarioas el 0
+	r"[0-9][0-9]*"
 	token.value = int(token.value)
 	return token
-
+	
 def t_VARIABLE(token):
 	r"[a-zA-Z][\_a-zA-Z0-9]*"
+	token.value = str(token.value)
 	return token
 
-def t_CADENA(token):
+#def t_CADENA(token):
+#def t_CAMPO(token):
 
 def t_REGISTRO(token):
-
-def t_CAMPO(token):
-
-def t_VARIABLE(token):
+	r"[a-zA-Z]+\.[a-zA-Z]+"
+	return token
 
 def t_FLOAT(token):
- 
+	r"[0-9][0-9]*\.[0-9]+"
+	token.value = float(token.value)
+	return token
+
+def t_NEWLINE(token):
+    r"\n+"
+    token.lexer.lineno += len(token.value)
+
+t_ignore = " \t"
+
 def t_HASHTAG(token):
+	r"\#"
+	return token
+	
+def t_error(token):
+    message = "Token desconocido:"
+    message += "\ntype:" + token.type
+    message += "\nvalue:" + str(token.value)
+    message += "\nline:" + str(token.lineno)
+    message += "\nposition:" + str(token.lexpos)
+    raise Exception(message)
