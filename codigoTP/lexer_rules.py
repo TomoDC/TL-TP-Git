@@ -59,7 +59,7 @@ def t_REGISTRO(token):
 	return token
 	
 def t_VARIABLE(token):
-	r"[a-zA-Z][a-zA-Z0-9]*"
+	r"[a-zA-Z][\_a-zA-Z0-9]*"
 	if token.value in reserved:
 		token.type = reserved[ token.value ]
 	return token
