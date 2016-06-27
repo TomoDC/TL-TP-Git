@@ -1,4 +1,4 @@
-tokens = ['PUNTOCOMA', 'COMENTARIO', 'LLAVEABIERTA', 'LLAVECERRADA', 'IF', 'ELSE', 'LPAREN', 'RPAREN', 'FOR', 'WHILE', 'DO', 'MULTIPLICACIONESCALAR', 'CAPITALIZAR', 'COLINEALES', 'PRINT', 'LENGTH', 'IGUAL', 'SUMA', 'MENOS', 'POR', 'DIV', 'POTENCIA', 'PORCENTAJE', 'DESIGUALDAD', 'MAYOR', 'MENOR', 'AND', 'OR', 'NOT', 'TRUE', 'FALSE', 'INTERROGACION', 'DOSPUNTOS', 'VARIABLE', 'NUMBER', 'CORCHETEA', 'CORCHETEC', 'COMA', 'REGISTRO', 'BEGIN', 'END', 'RETURN']
+tokens = ['PUNTOCOMA', 'COMENTARIO', 'LLAVEABIERTA', 'LLAVECERRADA', 'IF', 'ELSE', 'LPAREN', 'RPAREN', 'FOR', 'WHILE', 'DO', 'MULTIPLICACIONESCALAR', 'CAPITALIZAR', 'COLINEALES', 'PRINT', 'LENGTH', 'IGUAL', 'SUMA', 'MENOS', 'POR', 'DIV', 'POTENCIA', 'PORCENTAJE', 'DESIGUALDAD', 'MAYOR', 'MENOR', 'AND', 'OR', 'NOT', 'TRUE', 'FALSE', 'INTERROGACION', 'DOSPUNTOS', 'VARIABLE', 'NUMBER', 'CORCHETEA', 'CADENA', 'CORCHETEC', 'COMA', 'REGISTRO', 'BEGIN', 'END', 'RETURN']
 
 reserved = {
     "for" : "FOR",
@@ -55,7 +55,7 @@ def t_NUMBER(token):
     return token
 
 def t_REGISTRO(token):
-	r"[a-zA-Z]+\.[a-zA-Z0-9]+"
+	r"[a-zA-Z]+(\.[a-zA-Z0-9]+)+"
 	return token
 	
 def t_VARIABLE(token):
@@ -64,7 +64,9 @@ def t_VARIABLE(token):
 		token.type = reserved[ token.value ]
 	return token
 
-#def t_CADENA(token):
+def t_CADENA(token):
+	r'("[^"]*")'
+	return token
 
 def t_NEWLINE(token):
     r"\n+"
@@ -74,7 +76,7 @@ t_ignore_WHITESPACES = r"[ \t]+"
 t_ignore = " \t"
 
 def t_COMENTARIO(token):
-	r"\#[a-zA-Z0-9 ]*"
+	r"\#[^\n]*"
 	return token
 #los comentarios acepta solo letras y num.
 

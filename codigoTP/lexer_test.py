@@ -1,6 +1,6 @@
 import lexer_rules
 from ply.lex import lex
-text = "if else , a=100;  i++; asd.eqw1d multiplicacionEscalar 0.2=123 for while #do dcfs 12"
+text = "if else , a=100;  i++; asd.eqw1d.holi; s = \"asafddf\" multiplicacionEscalar 0.2=123 for while #do dcfs 12!$#%& \n asd=10"
 lexer = lex(module=lexer_rules)
 lexer.input(text)
 token = lexer.token()
