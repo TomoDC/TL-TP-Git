@@ -1,4 +1,4 @@
-tokens = ['PUNTOCOMA', 'COMENTARIO', 'LLAVEABIERTA', 'LLAVECERRADA', 'IF', 'ELSE', 'LPAREN', 'RPAREN', 'FOR', 'WHILE', 'DO', 'MULTIPLICACIONESCALAR', 'CAPITALIZAR', 'COLINEALES', 'PRINT', 'LENGTH', 'IGUAL', 'SUMA', 'MENOS', 'POR', 'DIV', 'POTENCIA', 'PORCENTAJE', 'DESIGUALDAD', 'MAYOR', 'MENOR', 'AND', 'OR', 'NOT', 'TRUE', 'FALSE', 'INTERROGACION', 'DOSPUNTOS', 'VARIABLE', 'NUMBER', 'CORCHETEA', 'CADENA', 'CORCHETEC', 'COMA', 'REGISTRO', 'BEGIN', 'END', 'RETURN']
+tokens = ['PUNTOCOMA', 'COMENTARIO', 'LLAVEABIERTA', 'LLAVECERRADA', 'IF', 'ELSE', 'LPAREN', 'RPAREN', 'FOR', 'WHILE', 'DO', 'MULTIPLICACIONESCALAR', 'CAPITALIZAR', 'COLINEALES', 'PRINT', 'LENGTH', 'IGUAL', 'SUMA', 'MENOS', 'POR', 'DIV', 'POTENCIA', 'PORCENTAJE', 'DESIGUALDAD', 'MAYOR', 'MENOR', 'AND', 'OR', 'NOT', 'TRUE', 'FALSE', 'INTERROGACION', 'DOSPUNTOS', 'VARIABLE', 'NUMBER', 'CORCHETEA', 'CADENA', 'CORCHETEC', 'COMA', 'REGISTRO', 'BEGIN', 'END', 'RETURN', 'NEWLINE']
 
 reserved = {
     "for" : "FOR",
@@ -51,9 +51,10 @@ def t_NUMBER(token):
     else:
         number_type = "int"
         number_value = int(token.value)
-    token.value = {"value": number_value, "type": number_type}
+    token.value = number_value
     return token
 
+#Asumimos que no hoy campos de un registro que a su vez sean registros 
 def t_REGISTRO(token):
 	r"[a-zA-Z]+(\.[a-zA-Z0-9]+)+"
 	return token
@@ -71,6 +72,7 @@ def t_CADENA(token):
 def t_NEWLINE(token):
     r"\n+"
     token.lexer.lineno += len(token.value)
+    return token
 
 t_ignore_WHITESPACES = r"[ \t]+"
 t_ignore = " \t"
