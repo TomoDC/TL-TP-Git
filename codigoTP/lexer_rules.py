@@ -1,4 +1,4 @@
-tokens = ['PUNTOCOMA', 'COMENTARIO', 'LLAVEABIERTA', 'LLAVECERRADA', 'IF', 'ELSE', 'LPAREN', 'RPAREN', 'FOR', 'WHILE', 'DO', 'MULTIPLICACIONESCALAR', 'CAPITALIZAR', 'COLINEALES', 'PRINT', 'LENGTH', 'IGUAL', 'SUMA', 'MENOS', 'POR', 'DIV', 'POTENCIA', 'PORCENTAJE', 'DESIGUALDAD', 'MAYOR', 'MENOR', 'AND', 'OR', 'NOT', 'TRUE', 'FALSE', 'INTERROGACION', 'DOSPUNTOS', 'VARIABLE', 'NUMBER', 'CORCHETEA', 'CADENA', 'CORCHETEC', 'COMA', 'REGISTRO', 'BEGIN', 'END', 'RETURN', 'NEWLINE']
+tokens = ['PUNTOCOMA', 'COMENTARIO', 'LLAVEABIERTA', 'LLAVECERRADA', 'IF', 'ELSE', 'LPAREN', 'RPAREN', 'FOR', 'WHILE', 'DO', 'MULTIPLICACIONESCALAR', 'CAPITALIZAR', 'COLINEALES', 'PRINT', 'LENGTH', 'IGUAL', 'SUMA', 'MENOS', 'POR', 'DIV', 'POTENCIA', 'PORCENTAJE', 'DESIGUALDAD', 'MAYOR', 'MENOR', 'AND', 'OR', 'NOT', 'TRUE', 'FALSE', 'INTERROGACION', 'DOSPUNTOS', 'VARIABLE', 'NUMBER', 'CORCHETEA', 'CADENA', 'CORCHETEC', 'COMA', 'PUNTO', 'BEGIN', 'END', 'RETURN', 'NEWLINE']
 
 reserved = {
     "for" : "FOR",
@@ -22,6 +22,7 @@ reserved = {
 }
 #Tal vez hay q ponerle el tipo a true y false.
 
+t_PUNTO = r"\."
 t_PUNTOCOMA = r"\;"
 t_LLAVEABIERTA = r"\{"
 t_LLAVECERRADA = r"\}"
@@ -55,10 +56,10 @@ def t_NUMBER(token):
     return token
 
 #Asumimos que no hoy campos de un registro que a su vez sean registros 
-def t_REGISTRO(token):
-	r"[a-zA-Z]+(\.[a-zA-Z0-9]+)+"
-	return token
-	
+#def t_REGISTRO(token):
+#	r"[a-zA-Z]+(\.[a-zA-Z0-9]+)+"
+#	return token
+
 def t_VARIABLE(token):
 	r"[a-zA-Z][\_a-zA-Z0-9]*"
 	if token.value in reserved:
