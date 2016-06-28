@@ -29,6 +29,10 @@ def p_s_do(subexpressions):
 def p_s_for(subexpressions):
     's : f'
     subexpressions[0] = subexpressions[1]
+
+def p_s_b(subexpressions):
+    's : b PUNTOCOMA'
+    subexpressions[0] = subexpressions[1] + subexpressions[2] 
     
 def p_s_asig(subexpressions):
     's : a PUNTOCOMA'
@@ -36,7 +40,27 @@ def p_s_asig(subexpressions):
     
 def p_s_o(subexpressions):
     's : o PUNTOCOMA'
-    subexpressions[0] = subexpressions[1] + subexpressions[2]        
+    subexpressions[0] = subexpressions[1] + subexpressions[2] 
+
+def p_s_r(subexpressions):
+    's : RETURN r PUNTOCOMA'
+    subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + subexpressions[3]
+
+def p_r_b(subexpressions):
+    'r : b'
+    subexpressions[0] = subexpressions[1]
+
+def p_r_v(subexpressions):
+    'r : v'
+    subexpressions[0] = subexpressions[1]
+
+def p_r_a(subexpressions):
+    'r : a'
+    subexpressions[0] = subexpressions[1]
+
+def p_r_o(subexpressions):
+    'r : o'
+    subexpressions[0] = subexpressions[1]
 
 def p_if(subexpressions):
     'if : IF LPAREN b RPAREN bq'
