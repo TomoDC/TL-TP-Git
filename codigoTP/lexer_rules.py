@@ -52,7 +52,7 @@ def t_NUMBER(token):
     else:
         number_type = "int"
         number_value = int(token.value)
-    token.value = number_value
+    token.value =  {"value": number_value, "type": number_type}
     return token
 
 #Asumimos que no hoy campos de un registro que a su vez sean registros 
@@ -64,10 +64,12 @@ def t_VARIABLE(token):
 	r"[a-zA-Z][\_a-zA-Z0-9]*"
 	if token.value in reserved:
 		token.type = reserved[ token.value ]
+	else: token.value = {"value": token.value, "type": token.type}
 	return token
 
 def t_CADENA(token):
 	r'("[^"]*")'
+	token.value = {"value": token.value, "type": token.type}
 	return token
 
 def t_NEWLINE(token):
