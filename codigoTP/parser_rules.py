@@ -2,6 +2,8 @@ from lexer_rules import tokens
 #from operator import add, mul
 #from expressions import BinaryOperation, Number
 
+types=dict()
+
 class SemanticException(Exception) :
 	pass
 
@@ -184,15 +186,15 @@ def p_v_num(subexpressions):
     
 def p_v_var(subexpressions):
     'v : VARIABLE'
-    subexpressions[0] = subexpressions[1]["value"]
+    subexpressions[0] = subexpressions[1]
     
 def p_v_vec(subexpressions):
     'v : VARIABLE CORCHETEA v CORCHETEC'
-    subexpressions[0] = subexpressions[1]["value"] + subexpressions[2] + subexpressions[3] + subexpressions[4]
+    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3] + subexpressions[4]
 
 def p_v_reg(subexpressions):
     'v : VARIABLE PUNTO v'
-    subexpressions[0] = subexpressions[1]["value"] + subexpressions[2] + subexpressions[3]
+    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]
     
 def p_v_mEvvb(subexpressions):
     'v : MULTIPLICACIONESCALAR LPAREN v COMA v COMA b RPAREN'
@@ -220,53 +222,53 @@ def p_v_bool(subexpressions):
 
 def p_a_reg(subexpressions):
     'a : VARIABLE PUNTO v IGUAL v'
-    subexpressions[0] = subexpressions[1]["value"] + subexpressions[2] + subexpressions[3]["value"] + subexpressions[4] + subexpressions[5]["value"]
+    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]["value"] + subexpressions[4] + subexpressions[5]["value"]
     
 def p_a_vec(subexpressions):
     'a : VARIABLE CORCHETEA v CORCHETEC IGUAL v'
-    subexpressions[0] = subexpressions[1]["value"] + subexpressions[2] + subexpressions[3] + subexpressions[4]["value"] + subexpressions[5] + subexpressions[6]["value"]
+    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3] + subexpressions[4]["value"] + subexpressions[5] + subexpressions[6]["value"]
 
 def p_a_var(subexpressions):
     'a : VARIABLE IGUAL v'
-    subexpressions[0] = subexpressions[1]["value"] + ' ' + subexpressions[2] + ' ' + subexpressions[3]["value"]
+    types[subexpressions[1]] = subexpressions[3]["type"]
+    subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + ' ' + subexpressions[3]["value"]
 
 def p_o_masigual(subexpressions):
     'o : VARIABLE SUMA IGUAL v'
-    subexpressions[0] = subexpressions[1]["value"] + ' ' + subexpressions[2] + subexpressions[3] + ' ' + subexpressions[4]["value"]
+    subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + subexpressions[3] + ' ' + subexpressions[4]["value"]
     
 def p_o_menosigual(subexpressions):
     'o : VARIABLE MENOS IGUAL v'
-    subexpressions[0] = subexpressions[1]["value"] + ' ' + subexpressions[2] + subexpressions[3] + ' ' + subexpressions[4]["value"]
+    subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + subexpressions[3] + ' ' + subexpressions[4]["value"]
         
 def p_o_porigual(subexpressions):
     'o : VARIABLE POR IGUAL v'
-    subexpressions[0] = subexpressions[1]["value"] + ' ' + subexpressions[2] + subexpressions[3] + ' ' + subexpressions[4]["value"]
+    subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + subexpressions[3] + ' ' + subexpressions[4]["value"]
 
 def p_o_divigual(subexpressions):
     'o : VARIABLE DIV IGUAL v'
-    subexpressions[0] = subexpressions[1]["value"] + ' ' + subexpressions[2] + subexpressions[3] + ' ' + subexpressions[4]["value"]
+    subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + subexpressions[3] + ' ' + subexpressions[4]["value"]
 
 def p_o_masmas(subexpressions):
     'o : VARIABLE SUMA SUMA'
-    print subexpressions[1]
-    if (subexpressions[1]["type"] not in ["int", "float"]): raise SemanticException("Incompatible type")
-    subexpressions[0] = subexpressions[1]["value"] + subexpressions[2] + subexpressions[3]
+    if (types[subexpressions[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
+    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]
 
 def p_o_menosmenos(subexpressions):
     'o : VARIABLE MENOS MENOS'
-    subexpressions[0] = subexpressions[1]["value"] + subexpressions[2] + subexpressions[3]
+    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]
         
 def p_o_masmasv(subexpressions):
     'o : SUMA SUMA VARIABLE'
-    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]["value"]
+    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]
 
 def p_o_menosmenosv(subexpressions):
     'o : MENOS MENOS VARIABLE'
-    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]["value"]
+    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]
 
 def p_o_print(subexpressions):
     'o : PRINT LPAREN v RPAREN'
-    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]["value"] + subexpressions[4]
+    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3] + subexpressions[4]
 
 def p_bq1(subexpressions):
 	'bq : s'

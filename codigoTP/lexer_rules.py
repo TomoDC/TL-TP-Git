@@ -77,7 +77,6 @@ def t_VARIABLE(token):
 	r"[a-zA-Z][\_a-zA-Z0-9]*"
 	if token.value in reserved:
 		token.type = reserved[ token.value ]
-	else: token.value = {"value": token.value, "type": token.type}
 	return token
 
 def t_CADENA(token):
