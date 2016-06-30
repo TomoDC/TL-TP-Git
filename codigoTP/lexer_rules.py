@@ -1,11 +1,16 @@
-tokens = ['PUNTOCOMA', 'COMENTARIO', 'LLAVEABIERTA', 'LLAVECERRADA', 'IF', 'ELSE', 'LPAREN', 'RPAREN', 'FOR', 'WHILE', 'DO', 'MULTIPLICACIONESCALAR', 'CAPITALIZAR', 'COLINEALES', 'PRINT', 'LENGTH', 'IGUAL', 'SUMA', 'MENOS', 'POR', 'DIV', 'POTENCIA', 'PORCENTAJE', 'DESIGUALDAD', 'MAYOR', 'MENOR', 'AND', 'OR', 'NOT', 'TRUE', 'FALSE', 'INTERROGACION', 'DOSPUNTOS', 'VARIABLE', 'NUMBER', 'CORCHETEA', 'CADENA', 'CORCHETEC', 'COMA', 'PUNTO', 'BEGIN', 'END', 'RETURN', 'NEWLINE']
+tokens = ['PUNTOCOMA', 'COMENTARIO', 'LLAVEABIERTA', 'LLAVECERRADA', 'IF', 'ELSE', 'LPAREN', 'RPAREN', 'FOR', 'WHILE', 'DO', 'MULTIPLICACIONESCALAR', 'CAPITALIZAR', 'COLINEALES', 'PRINT', 'LENGTH', 'IGUAL', 'SUMA', 'MENOS', 'POR', 'DIV', 'POTENCIA', 'PORCENTAJE', 'DESIGUALDAD', 'MAYOR', 'MENOR', 'AND', 'OR', 'NOT', 'TRUE', 'FALSE', 'INTERROGACION', 'DOSPUNTOS', 'VARIABLE', 'NUMBER', 'CORCHETEA', 'CADENA', 'CORCHETEC', 'COMA', 'PUNTO', 'RETURN', 'NEWLINE']
 
 reserved = {
     "for" : "FOR",
+	"FOR" : "FOR",
     "while" : "WHILE",
+	"WHILE" : "WHILE",
     "do" : "DO",
+	"DO" : "DO",
     "if" : "IF",
+    "IF" : "IF",
     "else" : "ELSE",
+	"ELSE" : "ELSE",
     "multiplicacionEscalar" : "MULTIPLICACIONESCALAR",
     "capitalizar" : "CAPITALIZAR",
     "colineales" : "COLINEALES",
@@ -13,12 +18,20 @@ reserved = {
     "length" : "LENGTH",
     "AND" : "AND",
 	"OR" : "OR",
+	"and" : "AND",
+	"or" : "OR",
 	"NOT" : "NOT",
+	"not" : "NOT",	
+	"BEGIN" : "BEGIN",
+	"END" : "END",	
 	"begin" : "BEGIN",
 	"end" : "END",
 	"return" : "RETURN",
 	"true" : "TRUE",
-	"false" : "FALSE"
+	"false" : "FALSE",
+	"RETURN" : "RETURN",
+	"TRUE" : "TRUE",
+	"FALSE" : "FALSE"
 }
 #Tal vez hay q ponerle el tipo a true y false.
 

@@ -32,10 +32,6 @@ def p_s_do(subexpressions):
 def p_s_for(subexpressions):
     's : f'
     subexpressions[0] = subexpressions[1]
-
-def p_s_b(subexpressions):
-    's : b PUNTOCOMA'
-    subexpressions[0] = subexpressions[1] + subexpressions[2] 
     
 def p_s_asig(subexpressions):
     's : a PUNTOCOMA'
@@ -48,6 +44,10 @@ def p_s_o(subexpressions):
 def p_s_r(subexpressions):
     's : RETURN r PUNTOCOMA'
     subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + subexpressions[3]
+
+def p_s_coment(subexpressions):
+    's : COMENTARIO'
+    subexpressions[0] = subexpressions[1]
 
 def p_r_b(subexpressions):
     'r : b'
@@ -214,6 +214,10 @@ def p_v_cadena(subexpressions):
     'v : CADENA'
     subexpressions[0] = subexpressions[1]
     
+def p_v_bool(subexpressions):
+    'v : b'
+    subexpressions[0] = subexpressions[1]
+
 def p_a_reg(subexpressions):
     'a : VARIABLE PUNTO v IGUAL v'
     subexpressions[0] = subexpressions[1]["value"] + subexpressions[2] + subexpressions[3]["value"] + subexpressions[4] + subexpressions[5]["value"]
@@ -224,8 +228,7 @@ def p_a_vec(subexpressions):
 
 def p_a_var(subexpressions):
     'a : VARIABLE IGUAL v'
-    subexpressions[0] = subexpressions[1]["value"] + subexpressions[2] + subexpressions[3]["value"]
-    print subexpressions[1]
+    subexpressions[0] = subexpressions[1]["value"] + ' ' + subexpressions[2] + ' ' + subexpressions[3]["value"]
 
 def p_o_masigual(subexpressions):
     'o : VARIABLE SUMA IGUAL v'
