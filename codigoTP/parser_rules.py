@@ -32,7 +32,7 @@ def p_s_do(subexpressions):
     subexpressions[0] = subexpressions[1]
 
 def p_s_for(subexpressions):
-    's : f'
+    's : for'
     subexpressions[0] = subexpressions[1]
     
 def p_s_asig(subexpressions):
@@ -51,10 +51,6 @@ def p_s_coment(subexpressions):
     's : COMENTARIO'
     subexpressions[0] = subexpressions[1]
 
-def p_r_b(subexpressions):
-    'r : b'
-    subexpressions[0] = subexpressions[1]
-
 def p_r_v(subexpressions):
     'r : v'
     subexpressions[0] = subexpressions[1]["value"]
@@ -68,136 +64,121 @@ def p_r_o(subexpressions):
     subexpressions[0] = subexpressions[1]
 
 def p_if(subexpressions):
-    'if : IF LPAREN b RPAREN bq'
+    'if : IF LPAREN v RPAREN bq'
     subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + subexpressions[3] + subexpressions[4] + subexpressions[5]
     
 def p_if_else(subexpressions):
-    'if : IF LPAREN b RPAREN bq ELSE bq'
+    'if : IF LPAREN v RPAREN bq ELSE bq'
     subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + subexpressions[3] + subexpressions[4] + subexpressions[5] + '\n' + subexpressions[6] + subexpressions[7]
 
 def p_while(subexpressions):
-	'w : WHILE LPAREN b RPAREN bq'
+	'w : WHILE LPAREN v RPAREN bq'
 	subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3] + subexpressions[4] + '\n\t' + subexpressions[5]
 
 def p_do_while(subexpressions):
-	'd : DO bq WHILE LPAREN b RPAREN PUNTOCOMA'
+	'd : DO bq WHILE LPAREN v RPAREN PUNTOCOMA'
 	subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3] + ' ' + subexpressions[4] + subexpressions[5] + subexpressions[6] + subexpressions[7]
 
 def p_for1(subexpressions):
-	'f : FOR LPAREN b RPAREN bq'
+	'for : FOR LPAREN v RPAREN bq'
 	subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + subexpressions[3] + subexpressions[4] + '\n\t' + subexpressions[5]
 
 def p_for2(subexpressions):
-	'f : FOR LPAREN a PUNTOCOMA b RPAREN bq'
+	'for : FOR LPAREN a PUNTOCOMA v RPAREN bq'
 	subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + subexpressions[3] + subexpressions[4] + ' ' + subexpressions[5] + subexpressions[6] + '\n\t' + subexpressions[7]
 
 def p_for3(subexpressions):
-	'f : FOR LPAREN a PUNTOCOMA b PUNTOCOMA o RPAREN bq'
+	'for : FOR LPAREN a PUNTOCOMA v PUNTOCOMA o RPAREN bq'
 	subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + subexpressions[3] + subexpressions[4] + ' ' + subexpressions[5] + subexpressions[6] + ' ' + subexpressions[7] + subexpressions[8] + '\n\t' + subexpressions[9]
 
 def p_b_true(subexpressions):
-    'b : TRUE'
+    'f : TRUE'
     subexpressions[0] = subexpressions[1]
 
 def p_b_false(subexpressions):
-    'b : FALSE'
+    'f : FALSE'
     subexpressions[0] = subexpressions[1]
 
 def p_b_not(subexpressions):
-    'b : NOT b'
+    'v : NOT f'
     subexpressions[0] = subexpressions[1] + subexpressions[2]
     
 def p_b_or(subexpressions):
-    'b : b OR b'
+    'v : v OR f'
     subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + ' ' + subexpressions[3]
     
 def p_b_and(subexpressions):
-    'b : b AND b'
+    'v : v AND f'
     subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + ' ' + subexpressions[3]
 
-def p_b_pregunta(subexpressions):
-    'b : b INTERROGACION b DOSPUNTOS b'
-    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3] + subexpressions[4] + subexpressions[5]
-
 def p_b_igualigual(subexpressions):
-    'b : v IGUAL IGUAL v'
+    'v : v IGUAL IGUAL f'
     subexpressions[0] = subexpressions[1]["value"] + ' ' + subexpressions[2] + subexpressions[3] + ' ' + subexpressions[4]["value"]
 
 def p_b_desigualdad(subexpressions):
-    'b : v DESIGUALDAD v'
+    'v : v DESIGUALDAD f'
     subexpressions[0] = subexpressions[1]["value"] + ' ' + subexpressions[2] + ' ' + subexpressions[3]["value"]
     
 def p_b_mayor(subexpressions):
-    'b : v MAYOR v'
+    'v : v MAYOR f'
     subexpressions[0] = subexpressions[1]["value"] + ' ' + subexpressions[2] + ' ' + subexpressions[3]["value"]
 
 def p_b_menor(subexpressions):
-    'b : v MENOR v'
+    'v : v MENOR f'
     subexpressions[0] = subexpressions[1]["value"] + ' ' + subexpressions[2] + ' ' + subexpressions[3]["value"]
 
-def p_b_b(subexpressions):
-    'b : LPAREN b RPAREN'
-    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]
-    
-def p_b_variable(subexpressions):
-    'b : VARIABLE'
-    subexpressions[0] = subexpressions[1]["value"]
-
 def p_b_colineales(subexpressions):
-    'b : COLINEALES LPAREN v COMA v RPAREN'
+    'v : COLINEALES LPAREN v COMA v RPAREN'
     subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]["value"] + subexpressions[4] + ' ' + subexpressions[5]["value"] + subexpressions[6]    
     
 def p_v_parentesis(subexpressions):
-    'v : LPAREN v RPAREN'
+    'f : LPAREN v RPAREN'
     subexpressions[0] = subexpressions[1] + subexpressions[2]["value"] + subexpressions[3]
 
+def p_f_v(subexpressions):
+    'v : f'
+    subexpressions[0] = subexpressions[1]
+
 def p_v_resta(subexpressions):
-    'v : v MENOS v'
+    'v : v MENOS f'
     subexpressions[0] = subexpressions[1]["value"] + subexpressions[2] + subexpressions[3]["value"]
 
 def p_v_suma(subexpressions):
-    'v : v SUMA v'
+    'v : v SUMA f'
     subexpressions[0] = subexpressions[1]["value"] + subexpressions[2] + subexpressions[3]["value"]
 
 def p_v_por(subexpressions):
-    'v : v POR v'
+    'v : v POR f'
     subexpressions[0] = subexpressions[1]["value"] + subexpressions[2] + subexpressions[3]["value"]
     
 def p_v_div(subexpressions):
-    'v : v DIV v'
+    'v : v DIV f'
     subexpressions[0] = subexpressions[1]["value"] + subexpressions[2] + subexpressions[3]["value"]
     
 def p_v_potencia(subexpressions):
-    'v : v POTENCIA v'
+    'v : v POTENCIA f'
     subexpressions[0] = subexpressions[1]["value"] + subexpressions[2] + subexpressions[3]["value"]
     
 def p_v_mod(subexpressions):
-    'v : v PORCENTAJE v'
+    'v : v PORCENTAJE f'
     subexpressions[0] = subexpressions[1]["value"] + subexpressions[2] + subexpressions[3]["value"]
 
 def p_v_pregunta(subexpressions):
-    'v : b INTERROGACION v DOSPUNTOS v'
+    'v : v INTERROGACION v DOSPUNTOS f'
     subexpressions[0] = subexpressions[1] + subexpressions[2] + ' ' + subexpressions[3] + ' ' + subexpressions[4] + ' ' + subexpressions[5]
      
 def p_v_num(subexpressions):
-    'v : NUMBER'
+    'f : NUMBER'
     red = {"value": str(subexpressions[1]["value"]), "type": subexpressions[1]["type"]}
     subexpressions[0] = red
     
 def p_v_var(subexpressions):
-    'v : VARIABLE'
+    'asig : VARIABLE'
+    '''asegurarse que el tipo de la variable siga siendo el mismo'''
     subexpressions[0] = subexpressions[1]
     
-def p_v_vec(subexpressions):
-    'v : VARIABLE CORCHETEA v CORCHETEC'
-    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3] + subexpressions[4]
-
-def p_v_reg(subexpressions):
-    'v : VARIABLE PUNTO v'
-    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]
-    
 def p_v_mEvvb(subexpressions):
-    'v : MULTIPLICACIONESCALAR LPAREN v COMA v COMA b RPAREN'
+    'v : MULTIPLICACIONESCALAR LPAREN v COMA v COMA v RPAREN'
     subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3] + subexpressions[4] + subexpressions[5] + subexpressions[6] + subexpressions[7] + subexpressions[8]
         
 def p_v_mEvv(subexpressions):
@@ -206,6 +187,7 @@ def p_v_mEvv(subexpressions):
 
 def p_v_cap(subexpressions):
     'v : CAPITALIZAR LPAREN v RPAREN'
+    if (types[subexpressions[1]] not in ["CADENA"]): raise SemanticException("Incompatible type")
     subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3] + subexpressions[4]
 
 def p_v_legth(subexpressions):
@@ -215,55 +197,65 @@ def p_v_legth(subexpressions):
 def p_v_cadena(subexpressions):
     'v : CADENA'
     subexpressions[0] = subexpressions[1]
-    
-def p_v_bool(subexpressions):
-    'v : b'
+
+def p_v_asignable(subexpressions):
+    'asig : VARIABLE'
     subexpressions[0] = subexpressions[1]
 
-def p_a_reg(subexpressions):
-    'a : VARIABLE PUNTO v IGUAL v'
-    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]["value"] + subexpressions[4] + subexpressions[5]["value"]
-    
-def p_a_vec(subexpressions):
-    'a : VARIABLE CORCHETEA v CORCHETEC IGUAL v'
-    subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3] + subexpressions[4]["value"] + subexpressions[5] + subexpressions[6]["value"]
+def p_v_asignable(subexpressions):
+    'asig : asig CORCHETEA v CORCHETEC'
+    if (subexpressions[3]["type"] not in ["int", "float"]): raise SemanticException("Incompatible type")
+    subexpressions[0] = subexpressions[1]
 
+def p_v_asignable2(subexpressions):
+    'asig : asig PUNTO VARIABLE'
+    subexpressions[0] = subexpressions[1]
+    
 def p_a_var(subexpressions):
-    'a : VARIABLE IGUAL v'
+    'a : asig IGUAL v'
     types[subexpressions[1]] = subexpressions[3]["type"]
     subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + ' ' + subexpressions[3]["value"]
 
 def p_o_masigual(subexpressions):
-    'o : VARIABLE SUMA IGUAL v'
+    'o : asig SUMA IGUAL v'
+    if (types[subexpressions[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
+    if (types[subexpressions[4]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + subexpressions[3] + ' ' + subexpressions[4]["value"]
     
 def p_o_menosigual(subexpressions):
-    'o : VARIABLE MENOS IGUAL v'
+    'o : asig MENOS IGUAL v'
+    if (types[subexpressions[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
+    if (types[subexpressions[4]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + subexpressions[3] + ' ' + subexpressions[4]["value"]
         
 def p_o_porigual(subexpressions):
-    'o : VARIABLE POR IGUAL v'
+    'o : asig POR IGUAL v'
+    if (types[subexpressions[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
+    if (types[subexpressions[4]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + subexpressions[3] + ' ' + subexpressions[4]["value"]
 
 def p_o_divigual(subexpressions):
-    'o : VARIABLE DIV IGUAL v'
+    'o : asig DIV IGUAL v'
+    if (types[subexpressions[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
+    if (types[subexpressions[4]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexpressions[0] = subexpressions[1] + ' ' + subexpressions[2] + subexpressions[3] + ' ' + subexpressions[4]["value"]
 
 def p_o_masmas(subexpressions):
-    'o : VARIABLE SUMA SUMA'
+    'o : asig SUMA SUMA'
     if (types[subexpressions[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]
 
 def p_o_menosmenos(subexpressions):
-    'o : VARIABLE MENOS MENOS'
+    'o : asig MENOS MENOS'
+    if (types[subexpressions[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]
         
 def p_o_masmasv(subexpressions):
-    'o : SUMA SUMA VARIABLE'
+    'o : SUMA SUMA asig'
     subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]
 
 def p_o_menosmenosv(subexpressions):
-    'o : MENOS MENOS VARIABLE'
+    'o : MENOS MENOS asig'
     subexpressions[0] = subexpressions[1] + subexpressions[2] + subexpressions[3]
 
 def p_o_print(subexpressions):
