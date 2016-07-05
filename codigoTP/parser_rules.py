@@ -3,6 +3,7 @@ from lexer_rules import tokens
 #from expressions import BinaryOperation, Number
 
 types=dict()
+subtypes=dict()
 
 class SemanticException(Exception) :
 	pass
@@ -101,6 +102,8 @@ def p_b_false(subexps):
 
 def p_b_not(subexps):
     'v : NOT f'
+    if (types[subexps[3]] not in ["int", "float"]): raise SemanticException("Incompatible type")
+
     subexps[0] = subexps[1] + subexps[2]
     
 def p_b_or(subexps):
@@ -112,7 +115,7 @@ def p_b_and(subexps):
     subexps[0] = subexps[1] + ' ' + subexps[2] + ' ' + subexps[3]
 
 def p_b_igualigual(subexps):
-    'v : v IGUAL IGUAL f'
+    'v : v IGUALIGUAL f'
     subexps[0] = subexps[1]["value"] + ' ' + subexps[2] + subexps[3] + ' ' + subexps[4]["value"]
 
 def p_b_desigualdad(subexps):
@@ -141,26 +144,32 @@ def p_f_v(subexps):
 
 def p_v_resta(subexps):
     'v : v MENOS f'
+    if (types[subexps[3]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1]["value"] + subexps[2] + subexps[3]["value"]
 
 def p_v_suma(subexps):
     'v : v SUMA f'
+    if (types[subexps[3]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1]["value"] + subexps[2] + subexps[3]["value"]
 
 def p_v_por(subexps):
     'v : v POR f'
+    if (types[subexps[3]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1]["value"] + subexps[2] + subexps[3]["value"]
     
 def p_v_div(subexps):
     'v : v DIV f'
+    if (types[subexps[3]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1]["value"] + subexps[2] + subexps[3]["value"]
     
 def p_v_potencia(subexps):
     'v : v POTENCIA f'
+    if (types[subexps[3]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1]["value"] + subexps[2] + subexps[3]["value"]
     
 def p_v_mod(subexps):
     'v : v PORCENTAJE f'
+    if (types[subexps[3]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1]["value"] + subexps[2] + subexps[3]["value"]
 
 def p_v_pregunta(subexps):
@@ -173,7 +182,7 @@ def p_v_num(subexps):
     subexps[0] = red
 
 def p_v_var(subexps):
-    'v : VARIABLE'
+    'v : VARIABLE index'
     '''asegurarse que el tipo de la variable siga siendo el mismo'''
     subexps[0] = subexps[1]
     
@@ -183,6 +192,7 @@ def p_v_mEvvb(subexps):
         
 def p_v_mEvv(subexps):
     'v : MULTIPLICACIONESCALAR LPAREN v COMA v RPAREN'
+    if (types[subexps[1]] not in ["CADENA"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1] + subexps[2] + subexps[3] + subexps[4] + subexps[5] + subexps[6]
 
 def p_v_cap(subexps):
@@ -193,73 +203,83 @@ def p_v_cap(subexps):
 def p_v_legth(subexps):
     'v : LENGTH LPAREN v RPAREN'
     if (types[subexps[3]] not in ["int", "float"]): raise SemanticException("Incompatible type")
-
     subexps[0] = subexps[1] + subexps[2] + subexps[3] + subexps[4]
 
 def p_v_cadena(subexps):
     'v : CADENA'
     subexps[0] = subexps[1]
 
-def p_v_asignable(subexps):
-    'v : VARIABLE'
+def p_v_explicita(subexps):
+    'v : CORCHETEA lista CORCHETEC'
     subexps[0] = subexps[1]
 
-def p_v_asignable(subexps):
-    'v : v CORCHETEA v CORCHETEC'
-    if (subexps[3]["type"] not in ["int", "float"]): raise SemanticException("Incompatible type")
-    types[subexps[0]] = subexps[1]["type"]
+def p_v_lista(subexps):
+    'lista : lista COMA v'
     subexps[0] = subexps[1]
 
-def p_v_asignable2(subexps):
-    'v : v PUNTO VARIABLE'
-    types[subexps[0]] = subexps[3]["type"]
-    subexps[0] = subexps[1] + subexps[2] + subexps[3]
-    
+def p_v_lista2(subexps):
+    'lista : v'
+    subexps[0] = subexps[1]
+
 def p_a_var(subexps):
-    'a : v IGUAL v'
+    'a : VARIABLE index IGUAL v'
     types[subexps[1]] = subexps[3]["type"]
     subexps[0] = subexps[1] + ' ' + subexps[2] + ' ' + subexps[3]["value"]
 
+def p_a_var1(subexps):
+    'index : index CORCHETEA v CORCHETEC'
+    types[subexps[1]] = subexps[3]["type"]
+    subexps[0] = subexps[1] + ' ' + subexps[2] + ' ' + subexps[3]["value"]
+
+def p_a_var2(subexps):
+    'index : index PUNTO CADENA'
+    types[subexps[1]] = subexps[3]["type"]
+    subexps[0] = subexps[1] + ' ' + subexps[2] + ' ' + subexps[3]["value"]
+
+def p_a_var3(subexps):
+    'index : '
+    types[subexps[1]] = subexps[3]["type"]
+
 def p_o_masigual(subexps):
-    'o : v SUMA IGUAL v'
+    'o : VARIABLE index MASIGUAL v'
     if (types[subexps[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     if (types[subexps[4]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + ' ' + subexps[4]["value"]
     
 def p_o_menosigual(subexps):
-    'o : v MENOS IGUAL v'
+    'o : VARIABLE index MENOSIGUAL v'
     if (types[subexps[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     if (types[subexps[4]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + ' ' + subexps[4]["value"]
         
 def p_o_porigual(subexps):
-    'o : v POR IGUAL v'
+    'o : VARIABLE index PORIGUAL v'
     if (types[subexps[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     if (types[subexps[4]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + ' ' + subexps[4]["value"]
 
 def p_o_divigual(subexps):
-    'o : v DIV IGUAL v'
+    'o : VARIABLE index DIVIGUAL v'
     if (types[subexps[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     if (types[subexps[4]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + ' ' + subexps[4]["value"]
 
 def p_o_masmas(subexps):
-    'o : v SUMA SUMA'
+    'o : VARIABLE index MASMAS'
     if (types[subexps[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1] + subexps[2] + subexps[3]
 
 def p_o_menosmenos(subexps):
-    'o : v MENOS MENOS'
+    'o : VARIABLE index MENOSMENOS'
     if (types[subexps[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1] + subexps[2] + subexps[3]
         
 def p_o_masmasv(subexps):
-    'o : SUMA SUMA v'
+    'o : MASMAS VARIABLE index'
     subexps[0] = subexps[1] + subexps[2] + subexps[3]
 
 def p_o_menosmenosv(subexps):
-    'o : MENOS MENOS v'
+    'o : MENOSMENOS VARIABLE index'
     subexps[0] = subexps[1] + subexps[2] + subexps[3]
 
 def p_o_print(subexps):
