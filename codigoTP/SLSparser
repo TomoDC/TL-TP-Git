@@ -1,0 +1,21 @@
+#!/bin/bash
+while [[ $# -gt 1 ]]
+do
+key="$1"
+
+case $key in
+    -c|--extension)
+    input="$2"
+    shift # past argument
+    ;;
+    -o|--searchpath)
+    output="$2"
+    shift # past argument
+    ;;
+    *)
+            # unknown option
+    ;;
+esac
+shift # past argument or value
+done
+python parser.py "${input}" "${output}"

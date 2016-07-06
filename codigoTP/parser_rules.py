@@ -63,35 +63,35 @@ def p_r_o(subexps):
 ########################################
 
 def p_if(subexps):
-    'if : IF LPAREN v RPAREN bq'
+    'if : IF LPAREN v2 RPAREN bq'
     if subexps[3]["type"]=="bool":
     	subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3]["value"] + subexps[4] + subexps[5]
     else:
 		raise SemanticException("Expresion no-booleana en la guarda")
 
 def p_if_else(subexps):
-    'if : IF LPAREN v RPAREN bq ELSE bq'
+    'if : IF LPAREN v2 RPAREN bq ELSE bq'
     if subexps[3]["type"]=="bool":
-    	subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3]["value"] + subexps[4] + subexps[5] + '\n' + subexps[6] + subexps[7]
+    	subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3]["value"] + subexps[4] + subexps[5] + subexps[6] + ' ' + subexps[7]
     else:
 		raise SemanticException("Expresion no-booleana en la guarda")
 
 def p_while(subexps):
-	'w : WHILE LPAREN v RPAREN bq'
+	'w : WHILE LPAREN v2 RPAREN bq'
 	if subexps[3]["type"]=="bool":
-		subexps[0] = subexps[1] + subexps[2] + subexps[3]["value"] + subexps[4] + subexps[5]
+		subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3]["value"] + subexps[4] + subexps[5]
 	else:
 		raise SemanticException("Expresion no-booleana en la guarda")
 
 def p_do_while(subexps):
-	'd : DO bq WHILE LPAREN v RPAREN PUNTOCOMA'
+	'd : DO bq WHILE LPAREN v2 RPAREN PUNTOCOMA'
 	if subexps[5]["type"]=="bool":
-		subexps[0] = subexps[1] + '\n' + subexps[2] + subexps[3] + ' ' + subexps[4] + subexps[5]["value"] + subexps[6] + subexps[7]
+		subexps[0] = subexps[1] + ' ' + subexps[2] + '\n' + subexps[3] + ' ' + subexps[4] + subexps[5]["value"] + subexps[6] + subexps[7]
 	else:
 		raise SemanticException("Expresion no-booleana en la guarda")
 
 def p_for1(subexps):
-	'for : FOR LPAREN PUNTOCOMA v PUNTOCOMA RPAREN bq'
+	'for : FOR LPAREN PUNTOCOMA v2 PUNTOCOMA RPAREN bq'
 
 	if subexps[4]["type"]=="bool":
 		subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + ' '  + subexps[4]["value"] + subexps[5] + subexps[6] + subexps[7]
@@ -99,23 +99,25 @@ def p_for1(subexps):
 		raise SemanticException("Expresion no-booleana en la guarda")
 
 def p_for2(subexps):
-	'for : FOR LPAREN a PUNTOCOMA v PUNTOCOMA RPAREN bq'
+	'for : FOR LPAREN a PUNTOCOMA v2 PUNTOCOMA RPAREN bq'
 	if subexps[5]["type"]=="bool":
 		subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + subexps[4] + ' ' + subexps[5]["value"] + subexps[6] + subexps[7] + subexps[8]
 	else:
 		raise SemanticException("Expresion no-booleana en la guarda")
 
 def p_for3(subexps):
-	'for : FOR LPAREN a PUNTOCOMA v PUNTOCOMA o RPAREN bq'
+	'''for : FOR LPAREN a PUNTOCOMA v2 PUNTOCOMA o RPAREN bq
+	for : FOR LPAREN a PUNTOCOMA v2 PUNTOCOMA a RPAREN bq'''
 	if subexps[5]["type"]=="bool":	
 		subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + subexps[4] + ' ' + subexps[5]["value"] + subexps[6] + ' ' + subexps[7] + subexps[8] + subexps[9]
 	else:
 		raise SemanticException("Expresion no-booleana en la guarda")
 
 def p_for4(subexps):
-	'for : FOR LPAREN a PUNTOCOMA v PUNTOCOMA a RPAREN bq'
-	if subexps[5]["type"]=="bool":	
-		subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + subexps[4] + ' ' + subexps[5]["value"] + subexps[6] + ' ' + subexps[7] + subexps[8] + '\n\t' + subexps[9]
+	'''for : FOR LPAREN PUNTOCOMA v2 PUNTOCOMA o RPAREN bq
+	for : FOR LPAREN PUNTOCOMA v2 PUNTOCOMA a RPAREN bq'''
+	if subexps[4]["type"]=="bool":
+		subexps[0] = subexps[1] + subexps[2] + subexps[3] + ' ' + subexps[4]["value"] + subexps[5] + ' ' + subexps[6] + subexps[7] + subexps[8]
 	else:
 		raise SemanticException("Expresion no-booleana en la guarda")
 
@@ -139,16 +141,16 @@ def p_b_not(subexps):
         raise SemanticException("Expresion no compatible con bool")
 
 def p_b_and_or(subexps):
-    '''v : v OR f
-    v : v AND f'''
+    '''v2 : v2 OR v
+    v2 : v2 AND v'''
     if (not ((subexps[1]["type"]=="bool") and (subexps[3]["type"]=="bool"))): raise SemanticException("Expresion no-booleana")
     subexps[0] = dict()
     subexps[0]["type"] = "bool"
     subexps[0]["value"] = subexps[1]["value"] + ' ' + subexps[2] + ' ' + subexps[3]["value"]
     
 def p_b_igualigual(subexps):
-    '''v : v IGUALIGUAL f
-    v : v DESIGUALDAD f'''
+    '''v2 : v2 IGUALIGUAL v
+    v2 : v2 DESIGUALDAD v'''
     if not (subexps[1]["type"]==subexps[3]["type"]): 
         if not(subexps[1]["type"] in ["int", "float"] and subexps[3]["type"] in ["int", "float"]):
             raise SemanticException("Comparacion entre valores de distinto tipo") 
@@ -160,8 +162,8 @@ def p_b_igualigual(subexps):
     subexps[0]["value"] = subexps[1]["value"] + ' ' + subexps[2] + ' ' + subexps[3]["value"]
 
 def p_b_mayor(subexps):
-    '''v : v MAYOR f
-    v : v MENOR f'''
+    '''v2 : v2 MAYOR v
+    v2 : v2 MENOR v'''
 	#comentarioMaxi: esta tiene la misma funcion que la de comparar por IGUALIGUAL etc. Si mantenemos este chequeo de tipos podriamos unir las reglas; si aca solo aceptamos string o numerico habria que cambiar este codigo.
     if not (subexps[1]["type"]==subexps[3]["type"]): 
         if not(subexps[1]["type"] in ["int", "float"] and subexps[3]["type"] in ["int", "float"]):
@@ -171,10 +173,15 @@ def p_b_mayor(subexps):
     subexps[0]["value"] = subexps[1]["value"] + ' ' + subexps[2] + ' ' + subexps[3]["value"]
 
 def p_v_parentesis(subexps):
-    'f : LPAREN v RPAREN'
+    'f : LPAREN v2 RPAREN'
     subexps[0] = dict()
     subexps[0]["type"] = subexps[2]["type"]
     subexps[0]["value"] = subexps[1] + subexps[2]["value"] + subexps[3]
+
+def p_f_v2(subexps):
+    'v2 : v'
+    subexps[0] = subexps[1]
+
 
 def p_f_v(subexps):
     'v : f'
@@ -203,7 +210,7 @@ def p_v_suma(subexps):
     subexps[0]["value"] = subexps[1]["value"] + ' ' + subexps[2] + ' ' + subexps[3]["value"]
 
 def p_v_pregunta(subexps):
-    'v : v INTERROGACION v DOSPUNTOS f'
+    'v2 : v2 INTERROGACION v DOSPUNTOS v'
     if (not (subexps[1]["type"]=="bool" and subexps[3]["type"]==subexps[5]["type"])): 
         if (not (subexps[1]["type"]=="bool" and subexps[3]["type"] in ["int", "float"] and subexps[5]["type"] in ["int", "float"])):
             raise SemanticException("Error en los tipos de argumentos")
@@ -217,17 +224,14 @@ def p_v_num(subexps):
     subexps[0] = red
 
 def p_v_mnum(subexps):
-    'f : MENOS NUMBER'
-    red = {"value": subexps[1] + str(subexps[2]["value"]), "type": subexps[2]["type"]}
+    'f : MENOS f'
+    red = {"value": subexps[1] + subexps[2]["value"], "type": subexps[2]["type"]}
     subexps[0] = red
 
 def p_v_var(subexps):
     'f : VARIABLE index'
-
-    print subexps[1]
-    print subexps[2]
-
     subexps[0] = dict()
+    print buscar(types[subexps[1]], subtypes.get(subexps[1]), subexps[2]["value"])
     subexps[0]["type"], subexps[0]["subtype"] = buscar(types[subexps[1]], subtypes.get(subexps[1]), subexps[2]["value"])
     subexps[0]["value"] = subexps[1] + subexps[2]["value"]
 
@@ -334,7 +338,7 @@ def p_v_v2explicita(subexps):
     subexps[0]["value"] = subexps[1]["value"] + subexps[2]["value"]
 
 def p_a_var(subexps):
-    'a : VARIABLE index IGUAL v' # mejorar
+    'a : VARIABLE index IGUAL v2' # mejorar
     types[subexps[1]], subtypes[subexps[1]] = procesar(subexps[4]["type"], subexps[4].get("subtype"), subexps[2]["value"])
     subexps[0] = subexps[1] + subexps[2]["value"] + ' ' + subexps[3] + ' ' + subexps[4]["value"]
 
@@ -376,10 +380,10 @@ def p_a_var3(subexps):
     subexps[0]["value"] = ""
 
 def p_o_masigual(subexps):
-    '''o : VARIABLE index MASIGUAL v
-    o : VARIABLE index MENOSIGUAL v
-    o : VARIABLE index PORIGUAL v
-    o : VARIABLE index DIVIGUAL v'''
+    '''o : VARIABLE index MASIGUAL v2
+    o : VARIABLE index MENOSIGUAL v2
+    o : VARIABLE index PORIGUAL v2
+    o : VARIABLE index DIVIGUAL v2'''
 	
     if (types[subexps[1]] == "vector" or types[subexps[1]] == "registro"):
 	    asigtype = buscar(types[subexps[1]], subtypes[subexps[1]], subexps[2]["value"])[0]
@@ -413,11 +417,11 @@ def p_o_print(subexps):
 
 def p_bq1(subexps):
 	'bq : s'
-	subexps[0] = subexps[1]
+	subexps[0] = "\n\t" + subexps[1]
 	
 def p_bq2(subexps):
 	'bq : LLAVEABIERTA ss LLAVECERRADA'
-	subexps[0] = subexps[1] + '\n\t' + "\n\t".join(subexps[2].split("\n")) + '\n' + subexps[3]
+	subexps[0] = subexps[1] + '\n\t' + "\n\t".join(subexps[2].split("\n")) + '\n' + subexps[3] + ' '
 
 def p_error(token):
     message = "[Syntax error]"
@@ -437,13 +441,14 @@ def buscar(tipo, subtype, search):
 	if (search == ""): 
 		return [tipo, subtype];
 	if search[0] == "[": 
-		if (tipo != "vector"): print "Error"
+		if (tipo != "vector"): print "Error1"
 		end = (match(search[1:],"]") + 1)
 		return buscar(subtype["type"], subtype.get("subtype"), search[end + 1:])
-	if (tipo != "registro"): print "Error"
-	split = search[1:].find(".") + 1
+	if (tipo != "registro"): print "Error2"
+	split = minaux(search[1:].find("."), search[1:].find("[")) + 1
 	if split == 0: split = len(search) + 1
-	if (subtype.get(search[1:split]) == None): print "Error"
+
+	if (subtype.get(search[1:split]) == None): print "Error3"
 	else: return buscar(subtype[search[1:split]]["type"], subtype[search[1:split]].get("subtype"), search[split:])
 
 def match(st, char) :
