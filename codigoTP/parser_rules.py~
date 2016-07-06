@@ -49,7 +49,7 @@ def p_s_coment(subexps):
     subexps[0] = subexps[1]
 
 def p_r_v(subexps):
-    'r : v'
+    'r : v2'
     subexps[0] = subexps[1]["value"]
 
 def p_r_a(subexps):
@@ -63,35 +63,35 @@ def p_r_o(subexps):
 ########################################
 
 def p_if(subexps):
-    'if : IF LPAREN v RPAREN bq'
+    'if : IF LPAREN v2 RPAREN bq'
     if subexps[3]["type"]=="bool":
     	subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3]["value"] + subexps[4] + subexps[5]
     else:
 		raise SemanticException("Expresion no-booleana en la guarda")
 
 def p_if_else(subexps):
-    'if : IF LPAREN v RPAREN bq ELSE bq'
+    'if : IF LPAREN v2 RPAREN bq ELSE bq'
     if subexps[3]["type"]=="bool":
     	subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3]["value"] + subexps[4] + subexps[5] + '\n' + subexps[6] + subexps[7]
     else:
 		raise SemanticException("Expresion no-booleana en la guarda")
 
 def p_while(subexps):
-	'w : WHILE LPAREN v RPAREN bq'
+	'w : WHILE LPAREN v2 RPAREN bq'
 	if subexps[3]["type"]=="bool":
 		subexps[0] = subexps[1] + subexps[2] + subexps[3]["value"] + subexps[4] + '\n\t' + subexps[5]
 	else:
 		raise SemanticException("Expresion no-booleana en la guarda")
 
 def p_do_while(subexps):
-	'd : DO bq WHILE LPAREN v RPAREN PUNTOCOMA'
+	'd : DO bq WHILE LPAREN v2 RPAREN PUNTOCOMA'
 	if subexps[5]["type"]=="bool":
 		subexps[0] = subexps[1] + '\n' + subexps[2] + subexps[3] + ' ' + subexps[4] + subexps[5]["value"] + subexps[6] + subexps[7]
 	else:
 		raise SemanticException("Expresion no-booleana en la guarda")
 
 def p_for1(subexps):
-	'for : FOR LPAREN PUNTOCOMA v PUNTOCOMA RPAREN bq'
+	'for : FOR LPAREN PUNTOCOMA v2 PUNTOCOMA RPAREN bq'
 
 	if subexps[4]["type"]=="bool":
 		subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + ' '  + subexps[4]["value"] + subexps[5] + subexps[6] + '\n\t' + subexps[7]
@@ -99,21 +99,21 @@ def p_for1(subexps):
 		raise SemanticException("Expresion no-booleana en la guarda")
 
 def p_for2(subexps):
-	'for : FOR LPAREN a PUNTOCOMA v PUNTOCOMA RPAREN bq'
+	'for : FOR LPAREN a PUNTOCOMA v2 PUNTOCOMA RPAREN bq'
 	if subexps[5]["type"]=="bool":
 		subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + subexps[4] + ' ' + subexps[5]["value"] + subexps[6] + subexps[7] + '\n\t' + subexps[8]
 	else:
 		raise SemanticException("Expresion no-booleana en la guarda")
 
 def p_for3(subexps):
-	'for : FOR LPAREN a PUNTOCOMA v PUNTOCOMA o RPAREN bq'
+	'for : FOR LPAREN a PUNTOCOMA v2 PUNTOCOMA o RPAREN bq'
 	if subexps[5]["type"]=="bool":	
 		subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + subexps[4] + ' ' + subexps[5]["value"] + subexps[6] + ' ' + subexps[7] + subexps[8] + '\n\t' + subexps[9]
 	else:
 		raise SemanticException("Expresion no-booleana en la guarda")
 
 def p_for4(subexps):
-	'for : FOR LPAREN a PUNTOCOMA v PUNTOCOMA a RPAREN bq'
+	'for : FOR LPAREN a PUNTOCOMA v2 PUNTOCOMA a RPAREN bq'
 	if subexps[5]["type"]=="bool":	
 		subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + subexps[4] + ' ' + subexps[5]["value"] + subexps[6] + ' ' + subexps[7] + subexps[8] + '\n\t' + subexps[9]
 	else:
@@ -130,22 +130,22 @@ def p_b_true(subexps):
     subexps[0]["type"] = "bool"
 
 def p_b_not(subexps):
-    'v : NOT f'
+    'v2 : NOT v2'
     subexps[0] = dict()
     subexps[0]["type"] = "bool"
     subexps[0]["value"] = subexps[1] + subexps[2]["value"]
     
 def p_b_and_or(subexps):
-    '''v : v OR f
-    v : v AND f'''
+    '''v2 : v2 OR v
+    v2 : v2 AND v'''
     if (not (subexps[1]["type"]=="bool")): raise SemanticException("Expresion no-booleana")
     subexps[0] = dict()
     subexps[0]["type"] = "bool"
     subexps[0]["value"] = subexps[1]["value"] + ' ' + subexps[2] + ' ' + subexps[3]["value"]
     
 def p_b_igualigual(subexps):
-    '''v : v IGUALIGUAL f
-    v : v DESIGUALDAD f'''
+    '''v2 : v2 IGUALIGUAL v
+    v2 : v2 DESIGUALDAD v'''
     if not (subexps[1]["type"]==subexps[3]["type"]): 
 	if not(subexps[1]["type"] in ["int", "float"] and subexps[3]["type"] in ["int", "float"]):
 		raise SemanticException("Comparacion entre valores de distinto tipo") 
@@ -155,20 +155,24 @@ def p_b_igualigual(subexps):
     subexps[0]["value"] = subexps[1]["value"] + ' ' + subexps[2] + ' ' + subexps[3]["value"]
 
 def p_b_mayor(subexps):
-    '''v : v MAYOR f
-    v : v MENOR f'''
+    '''v2 : v2 MAYOR v
+    v2 : v2 MENOR v'''
     subexps[0] = dict()
     subexps[0]["type"] = "bool"
     subexps[0]["value"] = subexps[1]["value"] + ' ' + subexps[2] + ' ' + subexps[3]["value"]
 
 def p_v_parentesis(subexps):
-    'f : LPAREN v RPAREN'
+    'f : LPAREN v2 RPAREN'
     subexps[0] = dict()
     subexps[0]["type"] = subexps[2]["type"]
     subexps[0]["value"] = subexps[1] + subexps[2]["value"] + subexps[3]
 
 def p_f_v(subexps):
     'v : f'
+    subexps[0] = subexps[1]
+
+def p_f_v(subexps):
+    'v2 : v'
     subexps[0] = subexps[1]
 
 def p_v_binaria(subexps):

@@ -13,7 +13,7 @@ for (; true; ) {
 	b = 2;
 	c = 3;
 }
-for (d = b; b != c; a += b)
+for (d = b; b != c; a = b)
 	# Co
 	# men
 	# tario
