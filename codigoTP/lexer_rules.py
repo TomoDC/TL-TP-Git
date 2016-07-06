@@ -94,7 +94,6 @@ def t_CADENA(token):
 def t_NEWLINE(token):
     r"\n+"
     token.lexer.lineno += len(token.value)
-    return token
 
 t_ignore_WHITESPACES = r"[ \t]+"
 t_ignore = " \t"
