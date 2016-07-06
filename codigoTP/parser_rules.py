@@ -131,12 +131,12 @@ def p_b_true(subexps):
 
 def p_b_not(subexps):
     'v : NOT f'
-	if subexps[2]["type"]=="bool":
-		subexps[0] = dict()
-		subexps[0]["type"] = "bool"
-		subexps[0]["value"] = subexps[1] + ' ' + subexps[2]["value"]
-	else:
-		raise SemanticException("Expresion no compatible con bool")
+    if subexps[2]["type"]=="bool":
+        subexps[0] = dict()
+        subexps[0]["type"] = "bool"
+        subexps[0]["value"] = subexps[1] + ' ' + subexps[2]["value"]
+    else:
+        raise SemanticException("Expresion no compatible con bool")
 
 def p_b_and_or(subexps):
     '''v : v OR f
@@ -150,10 +150,10 @@ def p_b_igualigual(subexps):
     '''v : v IGUALIGUAL f
     v : v DESIGUALDAD f'''
     if not (subexps[1]["type"]==subexps[3]["type"]): 
-		if not(subexps[1]["type"] in ["int", "float"] and subexps[3]["type"] in ["int", "float"]):
-			raise SemanticException("Comparacion entre valores de distinto tipo") 
-	if ((subexps[1]["type"]=="vector" and subexps[3]["type"]=="vector") or (subexps[1]["type"]=="registro" and subexps[3]["type"]=="registro")):
-		if not(subexps[1]["subtype"]==subexps[3]["subtype"]): #comentarioMaxi: es una comparacion grosera porque si internamente la diferencia fuera de un int a un float, deberia tomarlo igual. Pero bueno :/
+        if not(subexps[1]["type"] in ["int", "float"] and subexps[3]["type"] in ["int", "float"]):
+            raise SemanticException("Comparacion entre valores de distinto tipo") 
+    if ((subexps[1]["type"]=="vector" and subexps[3]["type"]=="vector") or (subexps[1]["type"]=="registro" and subexps[3]["type"]=="registro")):
+        if not(subexps[1]["subtype"]==subexps[3]["subtype"]): #comentarioMaxi: es una comparacion grosera porque si internamente la diferencia fuera de un int a un float, deberia tomarlo igual. Pero bueno :/
 			raise SemanticException("Comparacion entre valores de distinto tipo") 
     subexps[0] = dict()
     subexps[0]["type"] = "bool"
@@ -163,9 +163,9 @@ def p_b_mayor(subexps):
     '''v : v MAYOR f
     v : v MENOR f'''
 	#comentarioMaxi: esta tiene la misma funcion que la de comparar por IGUALIGUAL etc. Si mantenemos este chequeo de tipos podriamos unir las reglas; si aca solo aceptamos string o numerico habria que cambiar este codigo.
-	if not (subexps[1]["type"]==subexps[3]["type"]): 
-	if not(subexps[1]["type"] in ["int", "float"] and subexps[3]["type"] in ["int", "float"]):
-		raise SemanticException("Comparacion entre valores de distinto tipo") 
+    if not (subexps[1]["type"]==subexps[3]["type"]): 
+        if not(subexps[1]["type"] in ["int", "float"] and subexps[3]["type"] in ["int", "float"]):
+            raise SemanticException("Comparacion entre valores de distinto tipo") 
     subexps[0] = dict()
     subexps[0]["type"] = "bool"
     subexps[0]["value"] = subexps[1]["value"] + ' ' + subexps[2] + ' ' + subexps[3]["value"]
@@ -246,8 +246,8 @@ def p_v_mEvvb(subexps):
     if (not (subexps[5]["type"] in ["int", "float"] and subexps[7]["type"]=="bool")): raise SemanticException("Error en los tipos de argumentos")
     subexps[0] = dict()
     subexps[0]["type"] = "vector"
-	subexps[0]["subtype"] = dict()
-	subexps[0]["subtype"]["type"] = "int" if subexps[3]["type"]["subtype"]["type"]=="int" and subexps[5]["type"]=="int" else "float"
+    subexps[0]["subtype"] = dict()
+    subexps[0]["subtype"]["type"] = "int" if subexps[3]["type"]["subtype"]["type"]=="int" and subexps[5]["type"]=="int" else "float"
 	#comentarioMaxi: aca al no saber el valor del bool no podemos usar eso para saber si devolvemos un vector de enteros o de floats. Ante la duda ponemos float que es mas general (excepto claro que las cosas que se multiplican sean todos int's)
     subexps[0]["value"] = subexps[1] + subexps[2] + subexps[3]["value"] + subexps[4] + subexps[5]["value"] + subexps[6] + subexps[7]["value"] + subexps[8]
         
@@ -257,9 +257,9 @@ def p_v_mEvv(subexps):
     if (not (subexps[3]["subtype"]["type"] in ["int", "float"])): raise SemanticException("Error en los tipos de argumentos")
     if (not (subexps[5]["type"] in ["int", "float"])): raise SemanticException("Error en los tipos de argumentos")
     subexps[0] = dict()
-	subexps[0]["type"] = "vector"
-	subexps[0]["subtype"] = dict()
-	subexps[0]["subtype"]["type"] = "int" if subexps[3]["type"]["subtype"]["type"]=="int" and subexps[5]["type"]=="int" else "float"
+    subexps[0]["type"] = "vector"
+    subexps[0]["subtype"] = dict()
+    subexps[0]["subtype"]["type"] = "int" if subexps[3]["type"]["subtype"]["type"]=="int" and subexps[5]["type"]=="int" else "float"
     subexps[0]["value"] = subexps[1] + subexps[2] + subexps[3]["value"] + subexps[4] + subexps[5]["value"] + subexps[6]
 
 def p_v_cap(subexps):
@@ -316,7 +316,7 @@ def p_v_listareg(subexps):
     subexps[0] = dict()
     subexps[0]["type"] = "registro"
     subexps[0]["subtype"] = dict()
-	subexps[0]["subtype"] = subexps[1]["subtype"] #comentarioMaxi: aca primero le van todos los campos que venian arrastrados
+    subexps[0]["subtype"] = subexps[1]["subtype"] #comentarioMaxi: aca primero le van todos los campos que venian arrastrados
     subexps[0]["subtype"][subexps[3]] = {"type": subexps[5]["type"], "subtype": subexps[5].get("subtype")} ### mejorar #comentarioMaxi: aca agrego el nuevo.
     subexps[0]["value"] = subexps[1]["value"] + subexps[2] + ' ' + subexps[3] + subexps[4] + subexps[5]["value"]
 
