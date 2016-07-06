@@ -64,6 +64,8 @@ def p_r_o(subexps):
     'r : o'
     subexps[0] = subexps[1]
 
+########################################
+
 def p_if(subexps):
     'if : IF LPAREN v RPAREN bq'
     subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + subexps[4] + subexps[5]
@@ -223,50 +225,40 @@ def p_v_lista2(subexps):
 
 def p_a_var(subexps):
     'a : VARIABLE index IGUAL v'
-    types[subexps[1]] = subexps[3]["type"]
-    subexps[0] = subexps[1] + ' ' + subexps[2] + ' ' + subexps[3]["value"]
+    subexps[0] = subexps[1] + subexps[2] + ' ' + subexps[3] + ' ' + subexps[4]["value"]
+
+########################################
 
 def p_a_var1(subexps):
     'index : index CORCHETEA v CORCHETEC'
-    types[subexps[1]] = subexps[3]["type"]
     subexps[0] = subexps[1] + ' ' + subexps[2] + ' ' + subexps[3]["value"]
 
 def p_a_var2(subexps):
-    'index : index PUNTO CADENA'
-    types[subexps[1]] = subexps[3]["type"]
+    'index : index PUNTO VARIABLE'
     subexps[0] = subexps[1] + ' ' + subexps[2] + ' ' + subexps[3]["value"]
 
 def p_a_var3(subexps):
     'index : '
-    types[subexps[1]] = subexps[3]["type"]
+    subexps[0] = ""
 
 def p_o_masigual(subexps):
     'o : VARIABLE index MASIGUAL v'
-    if (types[subexps[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
-    if (types[subexps[4]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + ' ' + subexps[4]["value"]
     
 def p_o_menosigual(subexps):
     'o : VARIABLE index MENOSIGUAL v'
-    if (types[subexps[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
-    if (types[subexps[4]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + ' ' + subexps[4]["value"]
         
 def p_o_porigual(subexps):
     'o : VARIABLE index PORIGUAL v'
-    if (types[subexps[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
-    if (types[subexps[4]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + ' ' + subexps[4]["value"]
 
 def p_o_divigual(subexps):
     'o : VARIABLE index DIVIGUAL v'
-    if (types[subexps[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
-    if (types[subexps[4]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3] + ' ' + subexps[4]["value"]
 
 def p_o_masmas(subexps):
     'o : VARIABLE index MASMAS'
-    if (types[subexps[1]] not in ["int", "float"]): raise SemanticException("Incompatible type")
     subexps[0] = subexps[1] + subexps[2] + subexps[3]
 
 def p_o_menosmenos(subexps):
@@ -302,3 +294,21 @@ def p_error(token):
         message += "\nline:" + str(token.lineno)
         message += "\nposition:" + str(token.lexpos)
     raise Exception(message)
+
+
+{"tipo": "vector", "subtipo": {"tipo": "vector", "subtipo": {"tipo":"int"}}}
+{"tipo": "registro", "subtipo": {"campo": {"tipo": "registro", "subtipo": {"campo2": {"tipo": "int"}}}}}
+
+def buscar(tipo, subtipo, search):
+	if (search == ""): 
+		return tipo;
+	if search[0] == "[": 
+		if (tipo != "vector"): print "Error"
+		end = search.find("]")
+		return buscar(subtipo["tipo"], subtipo.get("subtipo"), search[end + 1:])
+	if (tipo != "registro"): print "Error"
+	split = search[1:].find(".") + 1
+	if split == 0: split = len(search) + 1
+	if (subtipo.get(search[1:split]) == None): print "Error"
+	else: return buscar(subtipo[search[1:split]]["tipo"], subtipo[search[1:split]].get("subtipo"), search[split:])
+
