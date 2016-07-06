@@ -21,7 +21,7 @@ print({ca:["1", "2", "4"][5]}.ca);
 algo = true;
 no = false;
 amarillo = [true, true][2];
-if (true) #[false][{m:2}.m] == (b > 10)
+if ([false][{m:2}.m] == (b > 10))
 	while (5 > 10)
 		for (; true; ) {
 			#AA#AA
@@ -42,9 +42,6 @@ if (algo)
 	else
 		while (amarillo)
 			do
-				#NADA
-				#DE
-				#NADA
 				z = [a.edad + length("doce" + capitalizar("2")) / 2, 1.0 + (siete ? ((aa OR bb AND (2 != length("")) ? 1 : 2)) : g * 12 % 3), NOT aa ? b / -5 : c];
 			while (dos);
 '''

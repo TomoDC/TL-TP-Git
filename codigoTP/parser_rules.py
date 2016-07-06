@@ -139,7 +139,9 @@ def p_b_and_or(subexps):
 def p_b_igualigual(subexps):
     '''v : v IGUALIGUAL f
     v : v DESIGUALDAD f'''
-    if (not (subexps[1]["type"]==subexps[3]["type"])): raise SemanticException("Comparacion entre valores de distinto tipo") 
+    if not (subexps[1]["type"]==subexps[3]["type"]): 
+	if not(subexps[1]["type"] in ["int", "float"] and subexps[3]["type"] in ["int", "float"]):
+		raise SemanticException("Comparacion entre valores de distinto tipo") 
     # Comparar subtipos
     subexps[0] = dict()
     subexps[0]["type"] = "bool"
@@ -154,6 +156,7 @@ def p_b_mayor(subexps):
 
 def p_v_parentesis(subexps):
     'f : LPAREN v RPAREN'
+    subexps[0] = dict()
     subexps[0]["type"] = subexps[2]["type"]
     subexps[0]["value"] = subexps[1] + subexps[2]["value"] + subexps[3]
 
@@ -185,8 +188,11 @@ def p_v_suma(subexps):
 
 def p_v_pregunta(subexps):
     'v : v INTERROGACION v DOSPUNTOS f'
-    if (not (subexps[1]["type"]=="bool" and subexps[3]["type"]==subexps[5]["type"])): raise SemanticException("Error en los types de argumentos")
-    subexps[0]["type"] = "bool"
+    if (not (subexps[1]["type"]=="bool" and subexps[3]["type"]==subexps[5]["type"])): 
+        if (not (subexps[3]["type"] in ["int", "float"] and subexps[5]["type"] in ["int", "float"])):
+            raise SemanticException("Error en los tipos de argumentos")
+    subexps[0] = dict()
+    subexps[0]["type"] = subexps[3]["type"]
     subexps[0]["value"] = subexps[1]["value"] + subexps[2] + ' ' + subexps[3]["value"] + ' ' + subexps[4] + ' ' + subexps[5]["value"]
      
 def p_v_num(subexps):
@@ -194,43 +200,52 @@ def p_v_num(subexps):
     red = {"value": str(subexps[1]["value"]), "type": subexps[1]["type"]}
     subexps[0] = red
 
+def p_v_mnum(subexps):
+    'f : MENOS NUMBER'
+    red = {"value": subexps[1] + str(subexps[2]["value"]), "type": subexps[2]["type"]}
+    subexps[0] = red
+
 def p_v_var(subexps):
     'f : VARIABLE index'
     subexps[0] = dict()
-    subexps[0]["type"] = buscar(types[subexps[1]], subtypes.get(subexps[1]), subexps[2]["value"])
+    subexps[0]["type"], subexps[0]["subtype"] = buscar(types[subexps[1]], subtypes.get(subexps[1]), subexps[2]["value"])
     subexps[0]["value"] = subexps[1] + subexps[2]["value"]
 
 def p_b_colineales(subexps):
-    'v : COLINEALES LPAREN v COMA v RPAREN'
+    'f : COLINEALES LPAREN v COMA v RPAREN'
     if (not (subexps[3]["type"]=="vector" and subexps[5]["type"]=="vector")): raise SemanticException("Error en los tipos de argumentos")
     if (not (subexps[3]["subtipo"]["type"] in ["int", "float"] and subexps[5]["subtipo"]["type"] in ["int", "float"])): raise SemanticException("Error en los tipos de argumentos")
+    subexps[0] = dict()
     subexps[0]["type"] = "bool"
     subexps[0]["value"] = subexps[1] + subexps[2] + subexps[3]["value"] + subexps[4] + ' ' + subexps[5]["value"] + subexps[6]    
     
 def p_v_mEvvb(subexps):
-    'v : MULTIPLICACIONESCALAR LPAREN v COMA v COMA v RPAREN'
+    'f : MULTIPLICACIONESCALAR LPAREN v COMA v COMA v RPAREN'
     if (not (subexps[3]["type"]=="vector")): raise SemanticException("Error en los tipos de argumentos")
     if (not (subexps[3]["subtipo"]["type"] in ["int", "float"])): raise SemanticException("Error en los tipos de argumentos")
     if (not (subexps[5]["type"] in ["int", "float"]=="numero" and subexps[7]["type"]=="bool")): raise SemanticException("Error en los tipos de argumentos")
+    subexps[0] = dict()
     subexps[0]["type"] = "int"
     subexps[0]["value"] = subexps[1] + subexps[2] + subexps[3] + subexps[4] + subexps[5] + subexps[6] + subexps[7] + subexps[8]
         
 def p_v_mEvv(subexps):
-    'v : MULTIPLICACIONESCALAR LPAREN v COMA v RPAREN'
+    'f : MULTIPLICACIONESCALAR LPAREN v COMA v RPAREN'
     if (not (subexps[3]["type"]=="vector")): raise SemanticException("Error en los tipos de argumentos")
     if (not (subexps[3]["subtipo"]["type"] in ["int", "float"])): raise SemanticException("Error en los tipos de argumentos")
     if (not (subexps[5]["type"] in ["int", "float"])): raise SemanticException("Error en los tipos de argumentos")
+    subexps[0] = dict()
     subexps[0]["type"] = "float"
     subexps[0]["value"] = subexps[1] + subexps[2] + subexps[3] + subexps[4] + subexps[5] + subexps[6]
 
 def p_v_cap(subexps):
-    'v : CAPITALIZAR LPAREN v RPAREN'
-    if (subexps[3]["type"] not in ["CADENA"]): raise SemanticException("Incompatible type")
+    'f : CAPITALIZAR LPAREN v RPAREN'
+    if (subexps[3]["type"] not in ["CADENA"]): raise SemanticException("Capitalizar solo aplica a CADENA")
+    subexps[0] = dict()
     subexps[0]["type"] = "CADENA"
     subexps[0]["value"] = subexps[1] + subexps[2] + subexps[3]["value"] + subexps[4]
 
 def p_v_length(subexps):
-    'v : LENGTH LPAREN v RPAREN'
+    'f : LENGTH LPAREN v RPAREN'
     if subexps[3]["type"] not in ["CADENA", "vector"]: raise SemanticException("Incompatible type")
     subexps[0] = dict()
     subexps[0]["type"] = "int"
@@ -243,27 +258,33 @@ def p_f_cadena(subexps):
 def p_v_explicita(subexps):
     'expl : CORCHETEA lista CORCHETEC'
     subexps[0] = dict()
-    subexps[0]["type"] = "vector"
-    subexps[0]["subtype"] = {"type": subexps[2]["type"], "subtype": subexps[2].get("subtype")}
+    subexps[0]["type"] = subexps[2]["type"]
+    subexps[0]["subtype"] = subexps[2]["subtype"]
     subexps[0]["value"] = subexps[1] + subexps[2]["value"] + subexps[3]
 
 def p_v_explicita_2(subexps):
     'expl : LLAVEABIERTA listareg LLAVECERRADA'
     subexps[0] = dict()
-    subexps[0]["type"] = "registro"
-    subexps[0]["subtype"] = {"type": subexps[2]["type"], "subtype": subexps[2].get("subtype")}
+    subexps[0]["type"] = subexps[2]["type"]
+    subexps[0]["subtype"] = subexps[2].get("subtype")
     subexps[0]["value"] = subexps[1] + subexps[2]["value"] + subexps[3]
 
 def p_v_lista(subexps):
     'lista : lista COMA v'
-    if (subexps[1]["type"] != subexps[3]["type"]): raise SemanticException("Vectors can only have one type")
+    if (subexps[1]["type"] != subexps[3]["type"]): 
+	if not(subexps[1]["type"] in ["int", "float"], subexps[3]["type"] in ["int", "float"]):
+		raise SemanticException("Los vectores solo pueden tener un tipo")
     subexps[0] = dict()
     subexps[0]["type"] = subexps[1]["type"]
+    subexps[0]["subtype"] = subexps[1]["subtype"]
     subexps[0]["value"] = subexps[1]["value"] + subexps[2] + ' ' + subexps[3]["value"]
 
 def p_v_lista2(subexps):
     'lista : v'
-    subexps[0] = subexps[1]
+    subexps[0] = dict()
+    subexps[0]["type"] = "vector"
+    subexps[0]["subtype"] = {"type": subexps[1]["type"], "subtype": subexps[1].get("subtype")} ### mejorar
+    subexps[0]["value"] = subexps[1]["value"]
 
 def p_v_listareg(subexps):
     'listareg : listareg COMA VARIABLE DOSPUNTOS v'
@@ -283,21 +304,19 @@ def p_v_listareg2(subexps):
 def p_v_v2explicita(subexps):
     'f : expl index'
     subexps[0] = dict()
-    subexps[0]["type"] = buscar(subexps[1]["type"], subexps[1]["subtype"], subexps[2]["value"])
+    subexps[0]["type"], subexps[0]["subtype"] = buscar(subexps[1]["type"], subexps[1]["subtype"], subexps[2]["value"])
     subexps[0]["value"] = subexps[1]["value"] + subexps[2]["value"]
 
 def p_a_var(subexps):
     'a : VARIABLE index IGUAL v' # mejorar
     types[subexps[1]] = subexps[4]["type"]
+    subtypes[subexps[1]] = subexps[4].get("subtype")
     subexps[0] = subexps[1] + subexps[2]["value"] + ' ' + subexps[3] + ' ' + subexps[4]["value"]
 
 ########################################
 
 def p_a_var1(subexps):
     'index : index CORCHETEA v CORCHETEC'
-
-    print subexps[3]
-
     subexps[0] = dict()
     subexps[0]["type"] = "vector"
     subexps[0]["subtype"] = {"type" : subexps[1]["type"], "subtype" : subexps[1].get("subtype")}
@@ -308,7 +327,7 @@ def p_a_var2(subexps):
     'index : index PUNTO VARIABLE'
     subexps[0] = dict()
     subexps[0]["type"] = "registro"
-    subexps[0]["subtype"] = {subexps[3]: {"type": subexps[1]["type"]}}
+    subexps[0]["subtype"] = {subexps[3]: {"type": subexps[1]["type"], "subtype": subexps[1].get("subtype")}}
     subexps[0]["value"] = subexps[1]["value"] + subexps[2] + subexps[3]
 
 def p_a_var3(subexps):
@@ -324,7 +343,7 @@ def p_o_masigual(subexps):
     o : VARIABLE index DIVIGUAL v'''
 	
     if (types[subexps[1]] == "vector" or types[subexps[1]] == "registro"):
-	    asigtype = buscar(types[subexps[1]], subtypes[subexps[1]], subexps[2]["value"])
+	    asigtype = buscar(types[subexps[1]], subtypes[subexps[1]], subexps[2]["value"])[0]
     else: asigtype = types[subexps[1]]
     if (asigtype not in ["int", "float"] or subexps[4]["type"] not in ["int", "float"]): raise SemanticException("Valor no numerico")
 
@@ -335,7 +354,7 @@ def p_o_masmas(subexps):
     o : VARIABLE index MENOSMENOS'''
 
     if (types[subexps[1]] == "vector" or types[subexps[1]] == "registro"):
-	    asigtype = buscar(types[subexps[1]], subtypes[subexps[1]], subexps[2]["value"])
+	    asigtype = buscar(types[subexps[1]], subtypes[subexps[1]], subexps[2]["value"])[0]
     else: asigtype = types[subexps[1]]
     if (asigtype not in ["int", "float"]): raise SemanticException("Valor no numerico")
     subexps[0] = subexps[1] + subexps[2]["value"] + subexps[3]
@@ -344,7 +363,7 @@ def p_o_masmasv(subexps):
     '''o : MASMAS VARIABLE index
     o : MENOSMENOS VARIABLE index'''
     if (types[subexps[2]] == "vector" or types[subexps[2]] == "registro"):
-	    asigtype = buscar(types[subexps[2]], subtypes[subexps[2]], subexps[3]["value"])
+	    asigtype = buscar(types[subexps[2]], subtypes[subexps[2]], subexps[3]["value"])[0]
     else: asigtype = types[subexps[1]]
     if (asigtype not in ["int", "float"]): raise SemanticException("Valor no numerico")
     subexps[0] = subexps[1] + subexps[2] + subexps[3]["value"]
@@ -376,7 +395,7 @@ def p_error(token):
 
 def buscar(tipo, subtype, search):
 	if (search == ""): 
-		return tipo;
+		return [tipo, subtype];
 	if search[0] == "[": 
 		if (tipo != "vector"): print "Error"
 		end = search.find("]")
