@@ -58,7 +58,7 @@ def p_r_o(subexps):
 
 def p_1(subexps):
     'comm : comm COMENTARIO'
-    subexps[0] = subexps[1] + subexps[2]
+    subexps[0] = subexps[1] + '\n' + subexps[2]
 
 def p_2(subexps):
     'comm : '
@@ -76,7 +76,7 @@ def p_if(subexps):
 def p_if_else(subexps):
     'if : IF LPAREN v2 RPAREN bq ELSE bq'
     if subexps[3]["type"]=="bool":
-    	subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3]["value"] + subexps[4] + subexps[5] + subexps[6] + ' ' + subexps[7]
+    	subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3]["value"] + subexps[4] + subexps[5] + '\n' + subexps[6] + ' ' + subexps[7]
     else:
 		raise SemanticException("Expresion no-booleana en la guarda")
 
@@ -159,7 +159,7 @@ def p_b_igualigual(subexps):
         if not(subexps[1]["type"] in ["int", "float"] and subexps[3]["type"] in ["int", "float"]):
             raise SemanticException("Comparacion entre valores de distinto tipo") 
     if ((subexps[1]["type"]=="vector" and subexps[3]["type"]=="vector") or (subexps[1]["type"]=="registro" and subexps[3]["type"]=="registro")):
-        if not(subexps[1]["subtype"]==subexps[3]["subtype"]): #comentarioMaxi: es una comparacion grosera porque si internamente la diferencia fuera de un int a un float, deberia tomarlo igual. Pero bueno :/
+        if not(subexps[1]["subtype"]==subexps[3]["subtype"]): 
 			raise SemanticException("Comparacion entre valores de distinto tipo") 
     subexps[0] = dict()
     subexps[0]["type"] = "bool"
@@ -168,7 +168,7 @@ def p_b_igualigual(subexps):
 def p_b_mayor(subexps):
     '''v2 : v2 MAYOR v
     v2 : v2 MENOR v'''
-	#comentarioMaxi: esta tiene la misma funcion que la de comparar por IGUALIGUAL etc. Si mantenemos este chequeo de tipos podriamos unir las reglas; si aca solo aceptamos string o numerico habria que cambiar este codigo.
+	#Esta tiene la misma funcion que la de comparar por IGUALIGUAL etc. Si mantenemos este chequeo de tipos podriamos unir las reglas; si aca solo aceptamos string o numerico habria que cambiar este codigo.
     if not (subexps[1]["type"]==subexps[3]["type"]): 
         if not(subexps[1]["type"] in ["int", "float"] and subexps[3]["type"] in ["int", "float"]):
             raise SemanticException("Comparacion entre valores de distinto tipo") 
@@ -235,7 +235,6 @@ def p_v_mnum(subexps):
 def p_v_var(subexps):
     'f : VARIABLE index'
     subexps[0] = dict()
-    print buscar(types[subexps[1]], subtypes.get(subexps[1]), subexps[2]["value"])
     subexps[0]["type"], subexps[0]["subtype"] = buscar(types[subexps[1]], subtypes.get(subexps[1]), subexps[2]["value"])
     subexps[0]["value"] = subexps[1] + subexps[2]["value"]
 
@@ -303,7 +302,7 @@ def p_v_explicita_2(subexps):
     subexps[0]["value"] = subexps[1] + subexps[2]["value"] + subexps[3]
 
 def p_v_lista(subexps):
-    'lista : lista COMA v'
+    'lista : lista COMA v2'
     if (subexps[1]["subtype"]["type"] != subexps[3]["type"]):
 		if not(subexps[1]["subtype"]["type"] in ["int", "float"], subexps[3]["type"] in ["int", "float"]):
 			raise SemanticException("Los vectores solo pueden tener un tipo")
@@ -313,14 +312,14 @@ def p_v_lista(subexps):
     subexps[0]["value"] = subexps[1]["value"] + subexps[2] + ' ' + subexps[3]["value"]
 
 def p_v_lista2(subexps):
-    'lista : v'
+    'lista : v2'
     subexps[0] = dict()
     subexps[0]["type"] = "vector"
     subexps[0]["subtype"] = {"type": subexps[1]["type"], "subtype": subexps[1].get("subtype")} ### mejorar
     subexps[0]["value"] = subexps[1]["value"]
 
 def p_v_listareg(subexps):
-    'listareg : listareg COMA VARIABLE DOSPUNTOS v'
+    'listareg : listareg COMA VARIABLE DOSPUNTOS v2'
     subexps[0] = dict()
     subexps[0]["type"] = "registro"
     subexps[0]["subtype"] = dict()
@@ -329,7 +328,7 @@ def p_v_listareg(subexps):
     subexps[0]["value"] = subexps[1]["value"] + subexps[2] + ' ' + subexps[3] + subexps[4] + subexps[5]["value"]
 
 def p_v_listareg2(subexps):
-    'listareg : VARIABLE DOSPUNTOS v'
+    'listareg : VARIABLE DOSPUNTOS v2'
     subexps[0] = dict()
     subexps[0]["type"] = "registro"
     subexps[0]["subtype"] = {subexps[1]: {"type": subexps[3]["type"], "subtype": subexps[3].get("subtype")}} ### mejorar
@@ -345,7 +344,6 @@ def p_a_var(subexps):
     'a : VARIABLE index IGUAL v2' # mejorar
     types[subexps[1]], subtypes[subexps[1]] = procesar(subexps[4]["type"], subexps[4].get("subtype"), subexps[2]["value"])
     subexps[0] = subexps[1] + subexps[2]["value"] + ' ' + subexps[3] + ' ' + subexps[4]["value"]
-    print subtypes[subexps[1]]
 
 def procesar(tipo, subtipo, search) :
     if (search == ""): 
@@ -442,18 +440,17 @@ def p_error(token):
 {"type": "registro", "subtype": {"campo": {"type": "registro", "subtype": {"campo2": {"type": "int"}}}}}
 
 def buscar(tipo, subtype, search):
-	print search, tipo, subtype
 	if (search == ""): 
 		return [tipo, subtype];
 	if search[0] == "[": 
-		if (tipo != "vector"): print "Error1"
+		if (tipo != "vector"): raise SemanticException("Buscando subindice de algo que no es un vector")
 		end = (match(search[1:],"]") + 1)
 		return buscar(subtype["type"], subtype.get("subtype"), search[end + 1:])
-	if (tipo != "registro"): print "Error2"
+	if (tipo != "registro"): raise SemanticException("Buscando campo de algo que no es un registro")
 	split = minaux(search[1:].find("."), search[1:].find("[")) + 1
 	if split == 0: split = len(search) + 1
 
-	if (subtype.get(search[1:split]) == None): print "Error3"
+	if (subtype.get(search[1:split]) == None): raise SemanticException("Error")
 	else: return buscar(subtype[search[1:split]]["type"], subtype[search[1:split]].get("subtype"), search[split:])
 
 def match(st, char) :
