@@ -8,6 +8,10 @@ subtypes=dict()
 class SemanticException(Exception) :
 	pass
 
+def p_inicial_posta(subexps):
+    'sss : comm ss'
+    subexps[0] = subexps[1] + subexps[2]
+
 def p_inicial(subexps):
     'ss : s'
     subexps[0] = subexps[1]
@@ -235,8 +239,8 @@ def p_v_mnum(subexps):
 def p_v_var(subexps):
     'f : VARIABLE index'
     subexps[0] = dict()
-    subexps[0]["type"], subexps[0]["subtype"] = buscar(types[subexps[1]], subtypes.get(subexps[1]), subexps[2]["value"])
-    subexps[0]["value"] = subexps[1] + subexps[2]["value"]
+    subexps[0]["type"], subexps[0]["subtype"] = buscar(types[subexps[1]], subtypes.get(subexps[1]), subexps[2])
+    subexps[0]["value"] = subexps[1] + subexps[2]
 
 def p_b_colineales(subexps):
     'f : COLINEALES LPAREN v COMA v RPAREN'
@@ -255,7 +259,7 @@ def p_v_mEvvb(subexps):
     subexps[0]["type"] = "vector"
     subexps[0]["subtype"] = dict()
     subexps[0]["subtype"]["type"] = "int" if subexps[3]["type"]["subtype"]["type"]=="int" and subexps[5]["type"]=="int" else "float"
-	#comentarioMaxi: aca al no saber el valor del bool no podemos usar eso para saber si devolvemos un vector de enteros o de floats. Ante la duda ponemos float que es mas general (excepto claro que las cosas que se multiplican sean todos int's)
+	#aca al no saber el valor del bool no podemos usar eso para saber si devolvemos un vector de enteros o de floats. Ante la duda ponemos float que es mas general (excepto claro que las cosas que se multiplican sean todos int's)
     subexps[0]["value"] = subexps[1] + subexps[2] + subexps[3]["value"] + subexps[4] + subexps[5]["value"] + subexps[6] + subexps[7]["value"] + subexps[8]
         
 def p_v_mEvv(subexps):
@@ -315,7 +319,7 @@ def p_v_lista2(subexps):
     'lista : v2'
     subexps[0] = dict()
     subexps[0]["type"] = "vector"
-    subexps[0]["subtype"] = {"type": subexps[1]["type"], "subtype": subexps[1].get("subtype")} ### mejorar
+    subexps[0]["subtype"] = {"type": subexps[1]["type"], "subtype": subexps[1].get("subtype")} # 
     subexps[0]["value"] = subexps[1]["value"]
 
 def p_v_listareg(subexps):
@@ -323,27 +327,27 @@ def p_v_listareg(subexps):
     subexps[0] = dict()
     subexps[0]["type"] = "registro"
     subexps[0]["subtype"] = dict()
-    subexps[0]["subtype"] = subexps[1]["subtype"] #comentarioMaxi: aca primero le van todos los campos que venian arrastrados
-    subexps[0]["subtype"][subexps[3]] = {"type": subexps[5]["type"], "subtype": subexps[5].get("subtype")} ### mejorar #comentarioMaxi: aca agrego el nuevo.
+    subexps[0]["subtype"] = subexps[1]["subtype"] #aca primero le van todos los campos que venian arrastrados
+    subexps[0]["subtype"][subexps[3]] = {"type": subexps[5]["type"], "subtype": subexps[5].get("subtype")} #aca agrego el nuevo.
     subexps[0]["value"] = subexps[1]["value"] + subexps[2] + ' ' + subexps[3] + subexps[4] + subexps[5]["value"]
 
 def p_v_listareg2(subexps):
     'listareg : VARIABLE DOSPUNTOS v2'
     subexps[0] = dict()
     subexps[0]["type"] = "registro"
-    subexps[0]["subtype"] = {subexps[1]: {"type": subexps[3]["type"], "subtype": subexps[3].get("subtype")}} ### mejorar
+    subexps[0]["subtype"] = {subexps[1]: {"type": subexps[3]["type"], "subtype": subexps[3].get("subtype")}} #
     subexps[0]["value"] = subexps[1] + subexps[2] + subexps[3]["value"]
 
 def p_v_v2explicita(subexps):
     'f : expl index'
     subexps[0] = dict()
-    subexps[0]["type"], subexps[0]["subtype"] = buscar(subexps[1]["type"], subexps[1]["subtype"], subexps[2]["value"])
-    subexps[0]["value"] = subexps[1]["value"] + subexps[2]["value"]
+    subexps[0]["type"], subexps[0]["subtype"] = buscar(subexps[1]["type"], subexps[1]["subtype"], subexps[2])
+    subexps[0]["value"] = subexps[1]["value"] + subexps[2]
 
 def p_a_var(subexps):
-    'a : VARIABLE index IGUAL v2' # mejorar
-    types[subexps[1]], subtypes[subexps[1]] = procesar(subexps[4]["type"], subexps[4].get("subtype"), subexps[2]["value"])
-    subexps[0] = subexps[1] + subexps[2]["value"] + ' ' + subexps[3] + ' ' + subexps[4]["value"]
+    'a : VARIABLE index IGUAL v2' # 
+    types[subexps[1]], subtypes[subexps[1]] = procesar(subexps[4]["type"], subexps[4].get("subtype"), subexps[2])
+    subexps[0] = subexps[1] + subexps[2] + ' ' + subexps[3] + ' ' + subexps[4]["value"]
 
 def procesar(tipo, subtipo, search) :
     if (search == ""): 
@@ -363,24 +367,16 @@ def minaux(int1, int2):
 
 def p_a_var1(subexps):
     'index : index CORCHETEA v CORCHETEC'
-    subexps[0] = dict()
-    subexps[0]["type"] = "vector"
-    subexps[0]["subtype"] = {"type" : subexps[1]["type"], "subtype" : subexps[1].get("subtype")}
     if (subexps[3]["type"] not in ["int", "float"]): raise SemanticException("Vector index not a number")
-    subexps[0]["value"] = subexps[1]["value"] + subexps[2] + subexps[3]["value"] + subexps[4]
+    subexps[0] = subexps[1] + subexps[2] + subexps[3]["value"] + subexps[4]
 
 def p_a_var2(subexps):
     'index : index PUNTO VARIABLE'
-    subexps[0] = dict()
-    subexps[0]["type"] = "registro"
-    subexps[0]["subtype"] = {subexps[3]: {"type": subexps[1]["type"], "subtype": subexps[1].get("subtype")}}
-    subexps[0]["value"] = subexps[1]["value"] + subexps[2] + subexps[3]
+    subexps[0] = subexps[1] + subexps[2] + subexps[3]
 
 def p_a_var3(subexps):
     'index : '
-    subexps[0] = dict()
-    subexps[0]["type"] = {"type" : "empty"}
-    subexps[0]["value"] = ""
+    subexps[0] = ""
 
 def p_o_masigual(subexps):
     '''o : VARIABLE index MASIGUAL v2
@@ -389,11 +385,11 @@ def p_o_masigual(subexps):
     o : VARIABLE index DIVIGUAL v2'''
 	
     if (types[subexps[1]] == "vector" or types[subexps[1]] == "registro"):
-	    asigtype = buscar(types[subexps[1]], subtypes[subexps[1]], subexps[2]["value"])[0]
+	    asigtype = buscar(types[subexps[1]], subtypes[subexps[1]], subexps[2])[0]
     else: asigtype = types[subexps[1]]
     if (asigtype not in ["int", "float"] or subexps[4]["type"] not in ["int", "float"]): raise SemanticException("Valor no numerico")
-	#comentarioMaxi: para el MASIGUAL podriamos considerar las cadenas tambien, pero no se si vale la pena hacer el cambio ahora.
-    subexps[0] = subexps[1] + subexps[2]["value"] + ' ' +  subexps[3] + ' ' + subexps[4]["value"]
+	# para el MASIGUAL podriamos considerar las cadenas tambien
+    subexps[0] = subexps[1] + subexps[2]["value"] + ' ' +  subexps[3] + ' ' + subexps[4]
     
 def p_o_masmas(subexps):
     '''o : VARIABLE index MASMAS
@@ -409,10 +405,10 @@ def p_o_masmasv(subexps):
     '''o : MASMAS VARIABLE index
     o : MENOSMENOS VARIABLE index'''
     if (types[subexps[2]] == "vector" or types[subexps[2]] == "registro"):
-	    asigtype = buscar(types[subexps[2]], subtypes[subexps[2]], subexps[3]["value"])[0]
+	    asigtype = buscar(types[subexps[2]], subtypes[subexps[2]], subexps[3])[0]
     else: asigtype = types[subexps[2]]
     if (asigtype not in ["int", "float"]): raise SemanticException("Valor no numerico")
-    subexps[0] = subexps[1] + subexps[2] + subexps[3]["value"]
+    subexps[0] = subexps[1] + subexps[2] + subexps[3]
 
 def p_o_print(subexps):
     'o : PRINT LPAREN v RPAREN'
@@ -423,8 +419,8 @@ def p_bq1(subexps):
 	subexps[0] = "\n\t" + "\n\t".join(subexps[1].split("\n")) + ("\n\t " if subexps[1]!="" else '') + "\n\t".join(subexps[2].split("\n"))
 	
 def p_bq2(subexps):
-	'bq : LLAVEABIERTA comm ss LLAVECERRADA'
-	subexps[0] = subexps[1] + '\n\t' + "\n\t".join(subexps[2].split("\n")) + ("\n\t " if subexps[2]!="" else '') + "\n\t".join(subexps[3].split("\n")) + '\n' + subexps[3] + ' '
+	'bq : LLAVEABIERTA sss LLAVECERRADA'
+	subexps[0] = subexps[1] + '\n\t' + "\n\t".join(subexps[2].split("\n")) + '\n' + subexps[3] + ' '
 
 def p_error(token):
     message = "[Syntax error]"
@@ -435,9 +431,6 @@ def p_error(token):
         message += "\nposition:" + str(token.lexpos)
     raise Exception(message)
 
-
-{"type": "vector", "subtype": {"type": "vector", "subtype": {"type":"int"}}}
-{"type": "registro", "subtype": {"campo": {"type": "registro", "subtype": {"campo2": {"type": "int"}}}}}
 
 def buscar(tipo, subtype, search):
 	if (search == ""): 
