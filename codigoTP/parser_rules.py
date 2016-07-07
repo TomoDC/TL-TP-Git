@@ -341,6 +341,7 @@ def p_a_var(subexps):
     'a : VARIABLE index IGUAL v2' # mejorar
     types[subexps[1]], subtypes[subexps[1]] = procesar(subexps[4]["type"], subexps[4].get("subtype"), subexps[2]["value"])
     subexps[0] = subexps[1] + subexps[2]["value"] + ' ' + subexps[3] + ' ' + subexps[4]["value"]
+    print subtypes[subexps[1]]
 
 def procesar(tipo, subtipo, search) :
     if (search == ""): 
@@ -417,7 +418,7 @@ def p_o_print(subexps):
 
 def p_bq1(subexps):
 	'bq : s'
-	subexps[0] = "\n\t" + subexps[1]
+	subexps[0] = "\n\t" + "\n\t".join(subexps[1].split("\n"))
 	
 def p_bq2(subexps):
 	'bq : LLAVEABIERTA ss LLAVECERRADA'

@@ -75,11 +75,6 @@ def t_NUMBER(token):
     token.value =  {"value": number_value, "type": number_type}
     return token
 
-#Asumimos que no hoy campos de un registro que a su vez sean registros 
-#def t_REGISTRO(token):
-#	r"[a-zA-Z]+(\.[a-zA-Z0-9]+)+"
-#	return token
-
 def t_VARIABLE(token):
 	r"[a-zA-Z][\_a-zA-Z0-9]*"
 	if token.value in reserved:
