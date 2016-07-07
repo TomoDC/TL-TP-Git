@@ -13,8 +13,8 @@ def p_inicial(subexps):
     subexps[0] = subexps[1]
 
 def p_inicial3(subexps):
-    'ss : s ss'
-    subexps[0] = subexps[1] + '\n' + subexps[2] 
+    'ss : s comm ss'
+    subexps[0] = subexps[1] + '\n' + subexps[2] + ('\n' if subexps[2] != "" else '') + subexps[3]
 
 def p_s_if(subexps):
     's : if'
@@ -44,10 +44,6 @@ def p_s_r(subexps):
     's : RETURN r PUNTOCOMA'
     subexps[0] = subexps[1] + ' ' + subexps[2] + subexps[3]
 
-def p_s_coment(subexps):
-    's : COMENTARIO'
-    subexps[0] = subexps[1]
-
 def p_r_v(subexps):
     'r : v'
     subexps[0] = subexps[1]["value"]
@@ -59,6 +55,14 @@ def p_r_a(subexps):
 def p_r_o(subexps):
     'r : o'
     subexps[0] = subexps[1]
+
+def p_1(subexps):
+    'comm : comm COMENTARIO'
+    subexps[0] = subexps[1] + subexps[2]
+
+def p_2(subexps):
+    'comm : '
+    subexps[0] = ""
 
 ########################################
 
@@ -417,12 +421,12 @@ def p_o_print(subexps):
     subexps[0] = subexps[1] + subexps[2] + subexps[3]["value"] + subexps[4]
 
 def p_bq1(subexps):
-	'bq : s'
-	subexps[0] = "\n\t" + "\n\t".join(subexps[1].split("\n"))
+	'bq : comm s'
+	subexps[0] = "\n\t" + "\n\t".join(subexps[1].split("\n")) + ("\n\t " if subexps[1]!="" else '') + "\n\t".join(subexps[2].split("\n"))
 	
 def p_bq2(subexps):
-	'bq : LLAVEABIERTA ss LLAVECERRADA'
-	subexps[0] = subexps[1] + '\n\t' + "\n\t".join(subexps[2].split("\n")) + '\n' + subexps[3] + ' '
+	'bq : LLAVEABIERTA comm ss LLAVECERRADA'
+	subexps[0] = subexps[1] + '\n\t' + "\n\t".join(subexps[2].split("\n")) + ("\n\t " if subexps[2]!="" else '') + "\n\t".join(subexps[3].split("\n")) + '\n' + subexps[3] + ' '
 
 def p_error(token):
     message = "[Syntax error]"
